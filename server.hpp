@@ -8,19 +8,19 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 #include <SFML/Network.hpp>
 #include <utility>
-#include <array>
+#include <vector>
 /////////////////////////////////////////////////////////////////////////////////////////
 class Game;
 /////////////////////////////////////////////////////////////////////////////////////////
 class Server
 {
 public:
-    Server( unsigned short port );
+    Server( const unsigned short port );
     
     void run();
 private:
-    std::array<Game, 1> games;
-    int currentGame;
+    std::vector<Game> games;
+    unsigned maxGames;
     sf::TcpListener listener;
     unsigned short port;
 };
