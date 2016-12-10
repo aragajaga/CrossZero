@@ -55,8 +55,6 @@ public:
 
     void add( const std::string& filename, const sf::Rect<int>& rect, unsigned count )
     {
-        static std::vector<sf::Texture*> textures;
-
         sf::Texture* texture = new sf::Texture;
         if( !texture->loadFromFile(filename, rect) )
         {
@@ -150,6 +148,7 @@ private:
     int speed;
     int windowWidth;
     int windowHeight;
+    std::vector<sf::Texture*> textures;
     std::vector<sf::Sprite> sprites;
     std::vector<float> angles;
 
