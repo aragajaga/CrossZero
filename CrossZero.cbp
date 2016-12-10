@@ -13,7 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add directory="deps" />
+					<Add directory="." />
 				</Compiler>
 				<Linker>
 					<Add library="sfml-graphics-d" />
@@ -54,8 +54,16 @@
 		<Unit filename="ScreenManager.cpp" />
 		<Unit filename="ScreenManager.hpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="mainmenu.cpp" />
+		<Unit filename="mainmenu.hpp" />
 		<Unit filename="simple_particles.hpp" />
+		<Unit filename="stdafx.hpp" />
 		<Unit filename="timer.hpp" />
+		<Unit filename="ui/button.cpp" />
+		<Unit filename="ui/button.hpp" />
+		<Unit filename="ui/colorscheme.hpp" />
+		<Unit filename="ui/control.cpp" />
+		<Unit filename="ui/control.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

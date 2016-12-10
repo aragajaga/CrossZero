@@ -1,21 +1,24 @@
 #ifndef CROSSZERO_SCREENMANAGER_HPP
 #define CROSSZERO_SCREENMANAGER_HPP
 
-#include <SFML/Graphics.hpp>
+#include "stdafx.hpp"
 
-class ScreenManager
+class Screen
 {
 public:
-    ScreenManager( sf::RenderWindow &_wnd ) : wnd(_wnd) {};
+    void setWnd(sf::RenderWindow* _wnd)
+    {
+        wnd = _wnd;
+    }
 
-    float calcRelativeByX( const float &value ) const;
-    float calcRelativeByY( const float &value ) const;
+    sf::RenderWindow* getWnd() const
+    {
+        return wnd;
+    };
 
-    float getPxMenuVMargin();
 
 private:
-    float menuVMargin = .15f;
-    sf::RenderWindow& wnd;
+    sf::RenderWindow* wnd;
 };
 
 #endif // CROSSZERO_SCREENMANAGER_HPP
