@@ -6,6 +6,8 @@
 #include <clocale>
 #include <SFML/Graphics.hpp>
 #include "RoundedRectangleShape.hpp"
+#include "ScreenManager.hpp"
+#include "simple_particles.hpp"
 
 
 sf::Font arial;
@@ -84,21 +86,6 @@ namespace ui {
 
 ////////////////////////////////////////////////////////////////////////////////
 }
-
-class ScreenManager
-{
-public:
-    ScreenManager( sf::RenderWindow &_wnd ) : wnd(_wnd) {};
-
-    float calcRelativeByX( const float &value ) const { return wnd.getSize().x * value; };
-    float calcRelativeByY( const float &value ) const { return wnd.getSize().y * value; };
-
-    float getPxMenuVMargin() { return menuVMargin * wnd.getSize().y; }
-
-private:
-    float menuVMargin = .15f;
-    sf::RenderWindow& wnd;
-};
 
 class MainMenuButtons : public sf::Drawable, public sf::Transformable {
 public:
@@ -208,11 +195,9 @@ int graphics()
 
     sf::Rect<int> rect( 0, 0, 24, 24 );
 
-    SimpleParticles parts{"x.png", rect, elems};
+    SimpleParticles parts{{{"x.png", rect, elems}, {"o.png", rect, elems}}, SCREENWIDTH, SCREENHEIGHT, speed};
     parts.setWindowParams(SCREENWIDTH, SCREENHEIGHT);
     parts.setSpeed(speed);
-
-    parts.add("o.png", rect, 2);
 
 
 

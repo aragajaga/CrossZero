@@ -51,9 +51,11 @@
 		</Linker>
 		<Unit filename="RoundedRectangleShape.cpp" />
 		<Unit filename="RoundedRectangleShape.hpp" />
-		<Unit filename="deps/nanosvg/nanosvg.h" />
-		<Unit filename="deps/nanosvg/nanosvgrast.h" />
+		<Unit filename="ScreenManager.cpp" />
+		<Unit filename="ScreenManager.hpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="simple_particles.hpp" />
+		<Unit filename="timer.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
