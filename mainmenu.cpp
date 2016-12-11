@@ -5,6 +5,7 @@ extern Screen screen;
 MainMenu::MainMenu(int _count)
 {
     sampleBtn.setSize( sf::Vector2f(200.f, 50.f) );
+    interval = 10;
 
     buttons.resize(_count);
     int i = 0;
@@ -19,11 +20,18 @@ MainMenu::MainMenu(int _count)
 
 void MainMenu::update()
 {
+    const auto& scr = screen.getWnd()->getSize();
+    const auto& sample = sampleBtn.getSize();
+    auto boxH = scr.y - scr.y*((125+72)/480.f);
+
     int i = 0;
     for ( auto& num : buttons ) {
-        num.setPosition( sf::Vector2f( (screen.getWnd()->getSize().x - screen.getWnd()->getSize().y * (sampleBtn.getSize().y/480.f)*4 )/2,
-                                       ( screen.getWnd()->getSize().y - screen.getWnd()->getSize().y * sampleBtn.getSize().y/480.f*buttons.size() )/2 + screen.getWnd()->getSize().y*(sampleBtn.getSize().y+10)/480.f*i ));
-        num.setSize( sf::Vector2f( screen.getWnd()->getSize().y * (sampleBtn.getSize().y / 480.f)*4, screen.getWnd()->getSize().y * (sampleBtn.getSize().y / 480.f) ) );
+        //num.setPosition( scr.x/2, i*20 );
+         num.setPosition( ( scr.x - scr.y * sample.y/480.f * sample.x/sample.y )/2,
+                         scr.y * 125/480.f + ( ( boxH - ( scr.y * sample.y/480.f * buttons.size() + ( scr.y * interval/480.f * (buttons.size()-1) ) ) )/2 + scr.y*(sample.y+interval)/480.f*i ) );
+
+        num.setSize( scr.y * sample.y/480.f * sample.x/sample.y, scr.y * sample.y/480.f );
+        num.update();
         ++i;
     }
 }
@@ -35,6 +43,7 @@ ui::Button& MainMenu::operator[](const unsigned int& i)
 
 void MainMenu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+    states.transform = getTransform();
     for ( auto& num : buttons ) {
         target.draw(num, states);
     }

@@ -25,7 +25,7 @@ public:
         std::vector<std::tuple<std::string, sf::IntRect, unsigned>>&& data,
         int windowWidth,
         int windowHeight,
-        int speed
+        float speed
     )
         :
         speed(speed),
@@ -37,7 +37,7 @@ public:
             add(std::get<0>(it), std::get<1>(it), std::get<2>(it));
     }
 
-    void setSpeed( const int speed )
+    void setSpeed( const float speed )
     {
         this->speed = speed;
     }
@@ -66,10 +66,10 @@ public:
         sf::Sprite tmp;
         tmp.setTexture(*texture);
         //adding alpha canal to color sprite
-        sf::Color clr( tmp.getColor() );
+        /* sf::Color clr( tmp.getColor() );
         clr.a = 63;
 
-        tmp.setColor(clr);
+        tmp.setColor(clr); */
         //set origin by center
         tmp.setOrigin(rect.width / 2, rect.height / 2);
 
@@ -90,7 +90,7 @@ public:
 
     void update()
     {
-        float factor = speed * (timer.get_elapsed_time<tools::milliseconds>() / 10);
+        float factor = speed * (timer.get_elapsed_time<tools::milliseconds>() / 10.f);
         for( size_t it{}; it < sprites.size(); ++it )
         {
             sprites[it].move(std::cos(angles[it]) * factor, std::sin(angles[it]) * factor);
@@ -104,7 +104,7 @@ public:
                     sprites[it].getPosition().y
                 );
             }
-            if( sprites[it].getPosition().x + sprites[it].getOrigin().x > windowWidth )
+            if( sprites[it].getPosition().x + sprites[it].getOrigin().x > windowWidth+1 )
             {
                 angles[it] = PI - angles[it];
                 sprites[it].setPosition(
@@ -120,7 +120,7 @@ public:
                     sprites[it].getOrigin().y + 1
                 );
             }
-            if( sprites[it].getPosition().y + sprites[it].getOrigin().y > windowHeight )
+            if( sprites[it].getPosition().y + sprites[it].getOrigin().y > windowHeight+1 )
             {
                 angles[it] = -angles[it];
                 sprites[it].setPosition(
@@ -139,13 +139,14 @@ private:
     //simple random function
     float random( float from, float to )
     {
-        static std::mt19937 gen( std::time(nullptr) );
+        // static std::mt19937 gen( std::time(nullptr) );
+        static std::mt19937 gen( std::chrono::system_clock::now().time_since_epoch().count() );
         std::uniform_real_distribution<> dist( from, to );
         return dist(gen);
     }
 
     tools::Timer timer;
-    int speed;
+    float speed;
     int windowWidth;
     int windowHeight;
     std::vector<sf::Texture*> textures;
@@ -164,7 +165,7 @@ public:
         data{},
         windowWidth{},
         windowHeight{},
-        speed{10}
+        speed{10.f}
     {}
 
 
@@ -198,7 +199,7 @@ public:
         return *this;
     }
 
-    SimpleParticlesBuilder& setSpeed( const int speed )
+    SimpleParticlesBuilder& setSpeed( const float speed )
     {
         this->speed = speed;
         return *this;
@@ -212,7 +213,7 @@ private:
     std::vector<std::tuple<std::string, sf::IntRect, unsigned>> data;
     int windowWidth;
     int windowHeight;
-    int speed;
+    float speed;
 };
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -222,7 +223,7 @@ private:
 //          SimpleParticlesBuilder::create()
 //            .add("img.png", sf::IntRect(0, 0, 32, 32), 33)
 //            .setWindowParams(800, 600)
-//            .setSpeed(10)
+//            .setSpeed(10.f)
 //            .build();
 //
 /////////////////////////////////////////////////////////////////////////////////////////
