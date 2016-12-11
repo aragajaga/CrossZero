@@ -1,10 +1,11 @@
+#include <iostream>
 #include <cmath>
 #include <random>
-#include <clocale>
+#include "eventhandler.hpp"
 #include "ui/colorscheme.hpp"
 #include "ui/button.hpp"
 #include "RoundedRectangleShape.hpp"
-#include "ScreenManager.hpp"
+#include "screenmanager.hpp"
 #include "simple_particles.hpp"
 #include "mainmenu.hpp"
 
@@ -18,26 +19,26 @@ int main(int argc, char* argv[])
     //////////////////////////////*/
     arial.loadFromFile( "res/arial.ttf" );
 
+    sf::ContextSettings settings;
+    settings.antialiasingLevel = 8;
 
-
-    sf::RenderWindow app(sf::VideoMode(640, 480), "CrossZero");
+    sf::RenderWindow app(sf::VideoMode(640, 480), "CrossZero", sf::Style::Default, settings);
     screen.setWnd(&app);
 
     sf::View view( app.getDefaultView() );
     app.setFramerateLimit(60);
     app.setVerticalSyncEnabled(false);
 
+    EventHandler eventHandler;
+
 
 
     // Партикли на фоне
-    const int elems = 20;
-    const int speed = 3;
-
     auto parts = SimpleParticlesBuilder::create()
         .add("res/xo.png", sf::IntRect(0, 0, 24, 24), 10)
         .add("res/xo.png", sf::IntRect(24, 0, 24, 24), 10)
-        .setWindowParams(800, 600)
-        .setSpeed(3)
+        .setWindowParams(screen.getWnd()->getSize().x, screen.getWnd()->getSize().y)
+        .setSpeed(0.1f)
         .build();
 
 
@@ -55,6 +56,13 @@ int main(int argc, char* argv[])
     mainMenu[1].setString("Leaderboard");
     mainMenu[2].setString("Settings");
 
+    ui::Button button1;
+    button1.setPosition( 50.f, 50.f );
+    button1.setSize( 100.f, 20.f );
+    button1.setString( L"Мамаша" );
+    button1.update();
+    eventHandler.push(button1);
+
 
 
 
@@ -67,7 +75,7 @@ int main(int argc, char* argv[])
         parts.update();
         mainMenu.update();
         header.setCharacterSize( app.getSize().y * 72/480 );
-        header.setPosition( (app.getSize().x - header.getLocalBounds().width )/2, app.getSize().y * 72/480 );
+        header.setPosition( (app.getSize().x - header.getLocalBounds().width )/2, app.getSize().y * (72-21)/480 );
 
 
 
@@ -82,6 +90,10 @@ int main(int argc, char* argv[])
 
             if ( sf::Event::Resized == event.type )
                 app.setView( view = sf::View( sf::FloatRect( 0.f, 0.f, static_cast<float>( app.getSize().x ), static_cast<float>( app.getSize().y ) ) ) );
+
+            if ( sf::Event::MouseButtonPressed == event.type ) {
+                eventHandler.poll(event);
+            }
         }
 
 
@@ -96,6 +108,7 @@ int main(int argc, char* argv[])
 
         app.draw(header);
         app.draw(mainMenu);
+        app.draw(button1);
 
         app.display();
     }

@@ -17,6 +17,7 @@ private:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     ui::Button sampleBtn;
+    int interval;
     std::vector<ui::Button> buttons;
 };
 

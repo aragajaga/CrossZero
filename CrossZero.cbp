@@ -51,11 +51,14 @@
 		</Linker>
 		<Unit filename="RoundedRectangleShape.cpp" />
 		<Unit filename="RoundedRectangleShape.hpp" />
-		<Unit filename="ScreenManager.cpp" />
-		<Unit filename="ScreenManager.hpp" />
+		<Unit filename="eventhandler.cpp" />
+		<Unit filename="eventhandler.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mainmenu.cpp" />
 		<Unit filename="mainmenu.hpp" />
+		<Unit filename="screenmanager.cpp" />
+		<Unit filename="screenmanager.hpp" />
+		<Unit filename="server.hpp" />
 		<Unit filename="simple_particles.hpp" />
 		<Unit filename="stdafx.hpp" />
 		<Unit filename="timer.hpp" />
