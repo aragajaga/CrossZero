@@ -8,36 +8,25 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 #include <SFML/Network.hpp>
 #include <utility>
-#include <vector>
+#include <string>
 /////////////////////////////////////////////////////////////////////////////////////////
-class Game;
-/////////////////////////////////////////////////////////////////////////////////////////
-class Server
+class OneGameServer
 {
 public:
-    Server( const unsigned short port );
+    OneGameServer( sf::TcpSocket* firstClient, sf::TcpSocket* secondClient );
+    
+    ~OneGameServer();
+    
+    void setClients( sf::TcpSocket* firstClient, sf::TcpSocket* secondClient );
     
     void run();
 private:
-    std::vector<Game> games;
-    unsigned maxGames;
-    sf::TcpListener listener;
-    unsigned short port;
-};
-/////////////////////////////////////////////////////////////////////////////////////////
-class Game
-{
-public:
-    void setClients( sf::TcpSocket* firstPlayer, sf::TcpSocket* secondPlayer );
+    bool isConnected( sf::TcpSocket* );
+    void disconnectAll();
     
-    void run();
-private:
-    sf::SocketSelector selector;
-    sf::TcpSocket* firstPlayer;
-    sf::TcpSocket* secondPlayer;
-    bool firstPlayerWalking;
-    bool endOfGame;
-    char data[128];
+    std::pair<sf::TcpSocket*, sf::TcpSocket*> clients;
+    bool firstPlayerStep;
+    bool isGame;
 };
 /////////////////////////////////////////////////////////////////////////////////////////
 #endif //SERVER_HPP
