@@ -8,6 +8,7 @@
 #include "screenmanager.hpp"
 #include "simple_particles.hpp"
 #include "mainmenu.hpp"
+#include "effects.hpp"
 
 sf::Font arial;
 Screen screen;
@@ -72,7 +73,7 @@ int main(int argc, char* argv[])
         // GAME LOOP TASKS            //
         //////////////////////////////*/
 
-        parts.update();
+        parts.update(box);
         mainMenu.update();
         header.setCharacterSize( app.getSize().y * 72/480 );
         header.setPosition( (app.getSize().x - header.getLocalBounds().width )/2, app.getSize().y * (72-21)/480 );

@@ -14,7 +14,11 @@
 #include <vector>
 #include <tuple>
 
-#include "timer.hpp"
+#include "tools/timer.hpp"
+#include "tools/random.hpp"
+#include "tools/math.hpp"
+
+using tools::random;
 /////////////////////////////////////////////////////////////////////////////////////////
 class SimpleParticles
 {
@@ -28,29 +32,69 @@ public:
         float speed
     )
         :
-        speed(speed),
-        windowWidth(windowWidth),
-        windowHeight(windowHeight),
-        sprites{}
+        speed{speed},
+        windowSize{std::make_pair(windowWidth, windowHeight)},
+        windowWidth{windowSize.first},
+        windowHeight{windowSize.second}
     {
         for( const auto& it : data )
             add(std::get<0>(it), std::get<1>(it), std::get<2>(it));
+    }
+    
+    tools::Timer& getTimer()
+    {
+        return timer;
+    }
+    
+    const tools::Timer& getTimer() const
+    {
+        return timer;
     }
 
     void setSpeed( const float speed )
     {
         this->speed = speed;
     }
+    
+    const float getSpeed() const
+    {
+        return speed;
+    }
+    
+    const float getFactor() const
+    {
+        return factor;
+    }
 
     void setWindowParams( const int windowWidth, const int windowHeight )
     {
         this->windowWidth = windowWidth;
         this->windowHeight = windowHeight;
+    }
+    
+    const std::pair<int, int>& getWindowSize() const
+    {
+        return windowSize;
+    }
+    
+    std::vector<sf::Sprite>& getSprites() 
+    {
+        return sprites;
+    }
 
-        for( auto& it : sprites )
-        {
-            it.setPosition(random(0, windowWidth), random(0, windowHeight));
-        }
+    const std::vector<sf::Sprite>& getSprites() const
+    {
+        return sprites;
+    }
+    
+    std::vector<float>& getAngles()
+    {
+        return angles;
+    }
+    
+    const std::vector<float>& getAngles() const
+    {
+        return angles;
     }
 
     void add( const std::string& filename, const sf::Rect<int>& rect, unsigned count )
@@ -78,82 +122,30 @@ public:
             tmp.setPosition(random(0, windowWidth), random(0, windowHeight));
             sprites.push_back(tmp);
 
-            angles.emplace_back(static_cast<float>(random(0, 360) * 2 * PI / 360.f));
+            angles.emplace_back(getRadianFromDegree(random(0, 360)));
         }
-
     }
-
-    const std::vector<sf::Sprite>& getSprites() const
+    
+    template<typename FunctionType, typename... AdditionalParams>
+    void update(FunctionType* updateFunc, AdditionalParams&&... params)
     {
-        return sprites;
-    }
-
-    void update()
-    {
-        float factor = speed * (timer.get_elapsed_time<tools::milliseconds>() / 10.f);
-        for( size_t it{}; it < sprites.size(); ++it )
-        {
-            sprites[it].move(std::cos(angles[it]) * factor, std::sin(angles[it]) * factor);
-
-            //check collision with walls
-            if( sprites[it].getPosition().x - sprites[it].getOrigin().x < 0 )
-            {
-                angles[it] = PI - angles[it];
-                sprites[it].setPosition(
-                    sprites[it].getOrigin().x + 1,
-                    sprites[it].getPosition().y
-                );
-            }
-            if( sprites[it].getPosition().x + sprites[it].getOrigin().x > windowWidth+1 )
-            {
-                angles[it] = PI - angles[it];
-                sprites[it].setPosition(
-                    windowWidth - sprites[it].getOrigin().x + 1,
-                    sprites[it].getPosition().y
-                );
-            }
-            if( sprites[it].getPosition().y - sprites[it].getOrigin().y < 0 )
-            {
-                angles[it] = -angles[it];
-                sprites[it].setPosition(
-                    sprites[it].getPosition().x,
-                    sprites[it].getOrigin().y + 1
-                );
-            }
-            if( sprites[it].getPosition().y + sprites[it].getOrigin().y > windowHeight+1 )
-            {
-                angles[it] = -angles[it];
-                sprites[it].setPosition(
-                    sprites[it].getPosition().x,
-                    windowHeight - sprites[it].getOrigin().y + 1
-                );
-            }
-
-            sprites[it].rotate(1);
-        }
-        timer.restart();
+        factor = speed * (timer.get_elapsed_time<tools::milliseconds>() / 10.f);
+        updateFunc(*this, std::forward<AdditionalParams>(params)...);
     }
 
 private:
-
-    //simple random function
-    float random( float from, float to )
-    {
-        // static std::mt19937 gen( std::time(nullptr) );
-        static std::mt19937 gen( std::chrono::system_clock::now().time_since_epoch().count() );
-        std::uniform_real_distribution<> dist( from, to );
-        return dist(gen);
-    }
-
     tools::Timer timer;
     float speed;
-    int windowWidth;
-    int windowHeight;
-    std::vector<sf::Texture*> textures;
+    float factor;
+    std::pair<int,int> windowSize;
+    
+    int& windowWidth;
+    int& windowHeight;
+    
     std::vector<sf::Sprite> sprites;
     std::vector<float> angles;
-
-    constexpr static float PI = 3.14159f;
+    
+    std::vector<sf::Texture*> textures;
 };
 /////////////////////////////////////////////////////////////////////////////////////////
 class SimpleParticlesBuilder
