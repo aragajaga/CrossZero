@@ -91,6 +91,7 @@ bool OneGameServer::isConnected( sf::TcpSocket* sock )
     bool ret = sock->receive(&dummy, 0, dummy) != sf::Socket::Disconnected;
     if( lock )
         sock->setBlocking(true);
+    return ret;
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 void OneGameServer::disconnectAll()
@@ -99,26 +100,4 @@ void OneGameServer::disconnectAll()
     delete clients.second;
     clients.first = nullptr;
     clients.second = nullptr;
-}
-/////////////////////////////////////////////////////////////////////////////////////////
-int main()
-{
-    sf::TcpSocket* firstPlayer = new sf::TcpSocket;
-    sf::TcpSocket* secondPlayer = new sf::TcpSocket;
-    sf::TcpListener listener;
-    listener.listen(1337);
-    if( listener.accept(*firstPlayer) == sf::Socket::Done )
-    {
-        std::cout << "Client connected: " << firstPlayer->getRemoteAddress() << "\n";
-    }
-    if( listener.accept(*secondPlayer) == sf::Socket::Done )
-    {
-        std::cout << "Client connected: " << secondPlayer->getRemoteAddress() << "\n";
-    }
-    OneGameServer server{firstPlayer, secondPlayer};
-    std::cout << "Starting game\n";
-    server.run();
-    std::cout << "Game is end\n";
-    //Server serv{1337};
-    //serv.run();
 }
