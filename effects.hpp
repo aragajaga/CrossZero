@@ -77,7 +77,7 @@ void blizzard(SimpleParticles& parts, float direction)
     }
     
     auto eraseAndAddNew =
-        [&]
+        [&] (decltype(sprites.begin()) beg)
         {
             angles.erase(angles.begin() + (beg - sprites.begin()));
             auto cpy = *beg;
@@ -86,32 +86,32 @@ void blizzard(SimpleParticles& parts, float direction)
             sprites.back().setPosition(random(0, windowWidth), random(0, windowHeight));
             angles.emplace_back(direction);
         };
-    
+
     for( auto beg = sprites.begin(), end = sprites.end(); beg != end; ++beg )
     {
         beg->move(
-            std::cos(angles[beg - sprites.begin()]) * parts.getFactor(), 
+            std::cos(angles[beg - sprites.begin()]) * parts.getFactor(),
             std::sin(angles[beg - sprites.begin()]) * parts.getFactor()
         );
-        
+
         if(beg->getPosition().y - beg->getOrigin().y > windowHeight + 1)
         {
-            eraseAndAddNew();
+            eraseAndAddNew(beg);
             continue;
         }
         if(beg->getPosition().x - beg->getOrigin().x > windowWidth + 1)
         {
-            eraseAndAddNew();
+            eraseAndAddNew(beg);
             continue;
         }
         if(beg->getPosition().y + beg->getOrigin().y < 0.f)
         {
-            eraseAndAddNew();
+            eraseAndAddNew(beg);
             continue;
         }
         if(beg->getPosition().x + beg->getOrigin().x < 0.f)
         {
-            eraseAndAddNew();
+            eraseAndAddNew(beg);
             continue;
         }
         beg->rotate(1);
