@@ -86,8 +86,11 @@ public:
   }
 
 private:
-  virtual onMessage(const protocol::Message & msg) override;
-  virtual onDecodeError(const protocol::Error & code) override;
+  virtual onMessage(const protocol::Message & msg) override
+  {}
+
+  virtual onDecodeError(const protocol::Error & code) override
+  {}
 
   MessageDecoder decoder_;
   std::vector<SocketPtr> sockets_;
