@@ -3,6 +3,10 @@
 // Created by GbaLog
 // Link on github.com: https://github.com/GbaLog
 //---------------------------------------------------------------------------------------
+// TODO:
+// - add listener
+// - add messages handler
+//---------------------------------------------------------------------------------------
 #ifndef SERVER_HPP
 #define SERVER_HPP
 //---------------------------------------------------------------------------------------
@@ -34,10 +38,10 @@ struct IServerBase
   virtual onDecodeError(const protocol::Error & code) = 0;
 };
 //---------------------------------------------------------------------------------------
-class DecodeBuffer
+class MessageDecoder
 {
 public:
-  DecodeBuffer(IServerBase & server);
+  MessageDecoder(IServerBase & server);
 
   void addDataAndTryToDecode(const internal::ContainerByte & data);
 
@@ -62,17 +66,32 @@ class ServerBase : IServerBase
   using SocketPtr = std::unique_ptr<Socket>;
 
 public:
-  void pushMessage(const internal::ContainerByte & data);
+  ServerBase()
+    :
+    decoder_(*this)
+  {}
 
-  void pushClient(SocketPtr newClient);
+  void pushMessage(const internal::ContainerByte & data)
+  {
+    decoder_.addDataAndTryToDecode(data);
+  }
+
+  void pushClient(SocketPtr newClient)
+  {
+    sockets_.push_back(std::move(newClient));
+  }
 
   template<typename ... Args>
-  void emplaceClient(Args && ... args);
+  void emplaceClient(Args && ... args)
+  {
+    sockets_.emplace_back(std::make_unique<Socket>(std::forward<Args>(args)...));
+  }
 
 private:
   virtual onMessage(const protocol::Message & msg) override;
   virtual onDecodeError(const protocol::Error & code) override;
 
+  MessageDecoder decoder_;
   std::vector<SocketPtr> sockets_;
 };
 //---------------------------------------------------------------------------------------

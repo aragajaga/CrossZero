@@ -8,7 +8,7 @@ namespace server
 namespace detail
 {
 //---------------------------------------------------------------------------------------
-void DecodeBuffer::addDataAndTryToDecode(const internal::ContainerByte & data)
+void MessageDecoder::addDataAndTryToDecode(const internal::ContainerByte & data)
 {
   auto it = std::find(data.cbegin(), data.cend(), protocol::endOfMessage);
 
@@ -31,7 +31,7 @@ void DecodeBuffer::addDataAndTryToDecode(const internal::ContainerByte & data)
   }
 }
 //---------------------------------------------------------------------------------------
-void DecodeBuffer::tryToDecode()
+void MessageDecoder::tryToDecode()
 {
   protocol::Message msg;
   protocol::Error error;
@@ -42,7 +42,7 @@ void DecodeBuffer::tryToDecode()
     user_.onDecodeError(error);
 }
 //---------------------------------------------------------------------------------------
-bool DecodeBuffer::parseBuffer(protocol::Message & msg, protocol::Error & error)
+bool MessageDecoder::parseBuffer(protocol::Message & msg, protocol::Error & error)
 {
   if (buffer_.size() <protocol::minimumToDecodeSize)
     return makeError(protocol::ErrorCode::NoDataForDecoding, error);
@@ -61,7 +61,7 @@ bool DecodeBuffer::parseBuffer(protocol::Message & msg, protocol::Error & error)
   return true;
 }
 //---------------------------------------------------------------------------------------
-bool DecodeBuffer::readFirstByte(protocol::Message & msg)
+bool MessageDecoder::readFirstByte(protocol::Message & msg)
 {
   switch(static_cast<protocol::Command>(buffer_.front()))
   {
@@ -80,7 +80,7 @@ bool DecodeBuffer::readFirstByte(protocol::Message & msg)
   return true;
 }
 //---------------------------------------------------------------------------------------
-bool DecodeBuffer::readDirectionByte(protocol::Message & msg)
+bool MessageDecoder::readDirectionByte(protocol::Message & msg)
 {
   switch(static_cast<protocol::Direction>(buffer_.front()))
   {
@@ -98,13 +98,13 @@ bool DecodeBuffer::readDirectionByte(protocol::Message & msg)
   return true;
 }
 //---------------------------------------------------------------------------------------
-void DecodeBuffer::readUserByte(protocol::Message & msg)
+void MessageDecoder::readUserByte(protocol::Message & msg)
 {
   msg.header_.toClient_ = buffer_.front();
   buffer_.pop_front();
 }
 //---------------------------------------------------------------------------------------
-bool DecodeBuffer::makeError(protocol::ErrorCode code, protocol::Error & err)
+bool MessageDecoder::makeError(protocol::ErrorCode code, protocol::Error & err)
 {
   buffer_.clear();
 
