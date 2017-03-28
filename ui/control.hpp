@@ -1,9 +1,9 @@
 #ifndef CROSSZERO_UI_CONTROL_HPP
 #define CROSSZERO_UI_CONTROL_HPP
 
-#include "stdafx.hpp"
+#include "../stdafx.hpp"
 #include "colorscheme.hpp"
-#include "RoundedRectangleShape.hpp"
+#include "../RoundedRectangleShape.hpp"
 
 extern sf::Font arial;
 

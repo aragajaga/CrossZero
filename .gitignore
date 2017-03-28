@@ -40,8 +40,8 @@ obj/
 *.depend
 # CMake #
 #########
-CMakeLists.txt
-build
+build*
+CMakeLists.txt.user
 # Non-free resources #
 ######################
 arial.ttf

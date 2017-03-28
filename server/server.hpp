@@ -13,20 +13,20 @@
 class OneGameServer
 {
 public:
-    OneGameServer( sf::TcpSocket* firstClient, sf::TcpSocket* secondClient );
+    OneGameServer( sf::UdpSocket* firstClient, sf::UdpSocket* secondClient );
     
     ~OneGameServer();
     
-    void setClients( sf::TcpSocket* firstClient, sf::TcpSocket* secondClient );
+    void setClients( sf::UdpSocket* firstClient, sf::UdpSocket* secondClient );
     
     void run();
 private:
-    bool isConnected( sf::TcpSocket* );
     void disconnectAll();
     
-    std::pair<sf::TcpSocket*, sf::TcpSocket*> clients;
+    std::pair<sf::UdpSocket*, sf::UdpSocket*> clients;
     bool firstPlayerStep;
     bool isGame;
+    char field[3][3];
 };
 /////////////////////////////////////////////////////////////////////////////////////////
 #endif //SERVER_HPP
