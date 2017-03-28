@@ -10,8 +10,10 @@
 #include <utility>
 #include <string>
 #include <memory>
-#include <vector>
+#include <deque>
 #include <cstdint>
+//---------------------------------------------------------------------------------------
+#include "server_protocol.hpp"
 //---------------------------------------------------------------------------------------
 namespace server
 {
@@ -20,67 +22,58 @@ namespace detail
 namespace internal
 {
 //---------------------------------------------------------------------------------------
-constexpr const uint8_t endOfMessage = 0x03;
-//---------------------------------------------------------------------------------------
-enum class Command : uint8_t
-{
-  JustMessage   = 0x01,
-  ServerMessage = 0x02,
-  TestMessage   = 0x03,
-  Command       = 0x04,
-};
-//---------------------------------------------------------------------------------------
-enum class DirectionMessage : uint8_t
-{
-  ToServer          = 0x01,
-  ToAllClient       = 0x02,
-  ToConcreteClient  = 0x03,
-};
-//---------------------------------------------------------------------------------------
-using VecByte = std::vector<uint8_t>;
-//---------------------------------------------------------------------------------------
-struct MessageHeader
-{
-  Command command_;
-  DirectionMessage dir_;
-  uint8_t toClient_;
-};
-//---------------------------------------------------------------------------------------
-struct MessageBody
-{
-  VecByte data_;
-};
-//---------------------------------------------------------------------------------------
-struct Message
-{
-  MessageHeader header_;
-  MessageBody   body_;
-};
+using ContainerByte = std::deque<uint8_t>;
 //---------------------------------------------------------------------------------------
 } //internal
 //---------------------------------------------------------------------------------------
-template<typename Socket>
-class ServerBase
+struct IServerBase
+{
+  virtual ~IServerBase() {}
+
+  virtual onMessage(const protocol::Message & msg) = 0;
+  virtual onDecodeError(const protocol::Error & code) = 0;
+};
+//---------------------------------------------------------------------------------------
+class DecodeBuffer
 {
 public:
-  void pushMessage(const internal::VecByte & data);
+  DecodeBuffer(IServerBase & server);
+
+  void addDataAndTryToDecode(const internal::ContainerByte & data);
 
 private:
-  using SocketPtr = std::unique_ptr<Socket>;
+  void tryToDecode();
 
-  class DecodeBuffer;
+  bool parseBuffer(protocol::Message & msg, protocol::Error & error);
 
-  std::vector<SocketPtr> sockets_;
+  bool readFirstByte(protocol::Message & msg);
+  bool readDirectionByte(protocol::Message & msg);
+  void readUserByte(protocol::Message & msg);
+
+  bool makeError(protocol::ErrorCode code, protocol::Error & err);
+
+  internal::ContainerByte buffer_;
+  IServerBase & user_;
 };
 //---------------------------------------------------------------------------------------
 template<typename Socket>
-class ServerBase<Socket>::DecodeBuffer
+class ServerBase : IServerBase
 {
+  using SocketPtr = std::unique_ptr<Socket>;
+
 public:
-  void addDataAndTryToDecode(const internal::VecByte & data);
+  void pushMessage(const internal::ContainerByte & data);
+
+  void pushClient(SocketPtr newClient);
+
+  template<typename ... Args>
+  void emplaceClient(Args && ... args);
 
 private:
-  internal::VecByte buffer_;
+  virtual onMessage(const protocol::Message & msg) override;
+  virtual onDecodeError(const protocol::Error & code) override;
+
+  std::vector<SocketPtr> sockets_;
 };
 //---------------------------------------------------------------------------------------
 } //detail
