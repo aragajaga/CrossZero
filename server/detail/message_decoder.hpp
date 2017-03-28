@@ -1,14 +1,53 @@
 //---------------------------------------------------------------------------------------
-#include <algorithm>
+#ifndef MESSAGE_DECODER_HPP
+#define MESSAGE_DECODER_HPP
 //---------------------------------------------------------------------------------------
-#include "server.hpp"
+#include "../common_data.hpp"
+#include "server_interfaces.hpp"
+#include "server_protocol.hpp"
 //---------------------------------------------------------------------------------------
 namespace server
 {
 namespace detail
 {
 //---------------------------------------------------------------------------------------
-void MessageDecoder::addDataAndTryToDecode(const internal::ContainerByte & data)
+class MessageDecoder
+{
+public:
+  MessageDecoder(IServerBase & server);
+
+  void addDataAndTryToDecode(const internal::ContainerByte & data);
+
+private:
+  void tryToDecode();
+
+  bool parseBuffer(protocol::Message & msg, protocol::Error & error);
+
+  bool readFirstByte(protocol::Message & msg);
+  bool readDirectionByte(protocol::Message & msg);
+  void readUserByte(protocol::Message & msg);
+
+  bool makeError(protocol::ErrorCode code, protocol::Error & err);
+
+  internal::ContainerByte buffer_;
+  IServerBase & user_;
+};
+//---------------------------------------------------------------------------------------
+} //detail
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// IMPLEMENTATION
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------
+detail::MessageDecoder::MessageDecoder(IServerBase & server)
+  :
+  user_(server)
+{}
+//---------------------------------------------------------------------------------------
+void detail::MessageDecoder::addDataAndTryToDecode(const internal::ContainerByte & data)
 {
   auto it = std::find(data.cbegin(), data.cend(), protocol::endOfMessage);
 
@@ -31,7 +70,7 @@ void MessageDecoder::addDataAndTryToDecode(const internal::ContainerByte & data)
   }
 }
 //---------------------------------------------------------------------------------------
-void MessageDecoder::tryToDecode()
+void detail::MessageDecoder::tryToDecode()
 {
   protocol::Message msg;
   protocol::Error error;
@@ -42,7 +81,7 @@ void MessageDecoder::tryToDecode()
     user_.onDecodeError(error);
 }
 //---------------------------------------------------------------------------------------
-bool MessageDecoder::parseBuffer(protocol::Message & msg, protocol::Error & error)
+bool detail::MessageDecoder::parseBuffer(protocol::Message & msg, protocol::Error & error)
 {
   if (buffer_.size() <protocol::minimumToDecodeSize)
     return makeError(protocol::ErrorCode::NoDataForDecoding, error);
@@ -61,7 +100,7 @@ bool MessageDecoder::parseBuffer(protocol::Message & msg, protocol::Error & erro
   return true;
 }
 //---------------------------------------------------------------------------------------
-bool MessageDecoder::readFirstByte(protocol::Message & msg)
+bool detail::MessageDecoder::readFirstByte(protocol::Message & msg)
 {
   switch(static_cast<protocol::Command>(buffer_.front()))
   {
@@ -80,7 +119,7 @@ bool MessageDecoder::readFirstByte(protocol::Message & msg)
   return true;
 }
 //---------------------------------------------------------------------------------------
-bool MessageDecoder::readDirectionByte(protocol::Message & msg)
+bool detail::MessageDecoder::readDirectionByte(protocol::Message & msg)
 {
   switch(static_cast<protocol::Direction>(buffer_.front()))
   {
@@ -98,13 +137,13 @@ bool MessageDecoder::readDirectionByte(protocol::Message & msg)
   return true;
 }
 //---------------------------------------------------------------------------------------
-void MessageDecoder::readUserByte(protocol::Message & msg)
+void detail::MessageDecoder::readUserByte(protocol::Message & msg)
 {
   msg.header_.toClient_ = buffer_.front();
   buffer_.pop_front();
 }
 //---------------------------------------------------------------------------------------
-bool MessageDecoder::makeError(protocol::ErrorCode code, protocol::Error & err)
+bool detail::MessageDecoder::makeError(protocol::ErrorCode code, protocol::Error & err)
 {
   buffer_.clear();
 
@@ -113,10 +152,7 @@ bool MessageDecoder::makeError(protocol::ErrorCode code, protocol::Error & err)
   return false;
 }
 //---------------------------------------------------------------------------------------
-} //detail
 } //server
 //---------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------
+#endif // MESSAGE_DECODER_HPP
 //---------------------------------------------------------------------------------------

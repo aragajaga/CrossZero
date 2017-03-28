@@ -10,8 +10,8 @@ namespace server
 namespace protocol
 {
 //---------------------------------------------------------------------------------------
-constexpr const uint8_t endOfMessage = 0x00;
-constexpr const int     minimumToDecodeSize = 3;
+constexpr const uint8_t  endOfMessage = 0x00;
+constexpr const uint32_t minimumToDecodeSize = 3;
 //---------------------------------------------------------------------------------------
 enum class Command : uint8_t
 {
