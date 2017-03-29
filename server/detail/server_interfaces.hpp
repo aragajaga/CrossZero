@@ -2,6 +2,8 @@
 #ifndef SERVER_INTERFACES_HPP
 #define SERVER_INTERFACES_HPP
 //---------------------------------------------------------------------------------------
+#include "server_protocol.hpp"
+//---------------------------------------------------------------------------------------
 namespace server
 {
 namespace detail
