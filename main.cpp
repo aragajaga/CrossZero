@@ -5,7 +5,7 @@
 #include "ui/colorscheme.hpp"
 #include "ui/button.hpp"
 #include "RoundedRectangleShape.hpp"
-#include "screenmanager.hpp"
+#include "ScreenManager.hpp"
 #include "simple_particles.hpp"
 #include "mainmenu.hpp"
 #include "effects.hpp"
@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     /*//////////////////////////////
     // INITIALIZATION             //
     //////////////////////////////*/
-    arial.loadFromFile( "res/arial.ttf" );
+    arial.loadFromFile( "res/CZ.otf" );
 
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;

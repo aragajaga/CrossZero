@@ -109,11 +109,6 @@ public:
 
         sf::Sprite tmp;
         tmp.setTexture(*texture);
-        //adding alpha canal to color sprite
-        /* sf::Color clr( tmp.getColor() );
-        clr.a = 63;
-
-        tmp.setColor(clr); */
         //set origin by center
         tmp.setOrigin(rect.width / 2, rect.height / 2);
 

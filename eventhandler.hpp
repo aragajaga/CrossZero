@@ -1,7 +1,7 @@
 #ifndef CROSSZERO_EVENTHANDLER_HPP
 #define CROSSZERO_EVENTHANDLER_HPP
 
-#include <stdafx.hpp>
+#include "stdafx.hpp"
 #include "ui/control.hpp"
 
 class EventHandler {
