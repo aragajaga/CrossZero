@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
         .add("res/xo.png", sf::IntRect(0, 0, 24, 24), 10)
         .add("res/xo.png", sf::IntRect(24, 0, 24, 24), 10)
         .setWindowParams(screen.getWnd()->getSize().x, screen.getWnd()->getSize().y)
-        .setSpeed(0.1f)
+        .setSpeed(0.5f)
         .build();
 
 
