@@ -76,14 +76,8 @@ void blizzard(SimpleParticles& parts, float direction)
             *beg = direction;
     }
     
-    for( auto beg = sprites.begin(), end = sprites.end(); beg != end; ++beg )
-    {
-        beg->move(
-            std::cos(angles[beg - sprites.begin()]) * parts.getFactor(), 
-            std::sin(angles[beg - sprites.begin()]) * parts.getFactor()
-        );
-        
-        if(beg->getPosition().y - beg->getOrigin().y > windowHeight + 1)
+    auto eraseAndAddNew =
+        [&] (decltype(sprites.begin()) beg)
         {
             angles.erase(angles.begin() + (beg - sprites.begin()));
             auto cpy = *beg;
@@ -91,36 +85,33 @@ void blizzard(SimpleParticles& parts, float direction)
             sprites.push_back(std::move(cpy));
             sprites.back().setPosition(random(0, windowWidth), random(0, windowHeight));
             angles.emplace_back(direction);
+        };
+
+    for( auto beg = sprites.begin(), end = sprites.end(); beg != end; ++beg )
+    {
+        beg->move(
+            std::cos(angles[beg - sprites.begin()]) * parts.getFactor(),
+            std::sin(angles[beg - sprites.begin()]) * parts.getFactor()
+        );
+
+        if(beg->getPosition().y - beg->getOrigin().y > windowHeight + 1)
+        {
+            eraseAndAddNew(beg);
             continue;
         }
         if(beg->getPosition().x - beg->getOrigin().x > windowWidth + 1)
         {
-            angles.erase(angles.begin() + (beg - sprites.begin()));
-            auto cpy = *beg;
-            beg = sprites.erase(beg);
-            sprites.push_back(std::move(cpy));
-            sprites.back().setPosition(random(0, windowWidth), random(0, windowHeight));
-            angles.emplace_back(direction);
+            eraseAndAddNew(beg);
             continue;
         }
         if(beg->getPosition().y + beg->getOrigin().y < 0.f)
         {
-            angles.erase(angles.begin() + (beg - sprites.begin()));
-            auto cpy = *beg;
-            beg = sprites.erase(beg);
-            sprites.push_back(std::move(cpy));
-            sprites.back().setPosition(random(0, windowWidth), random(0, windowHeight));
-            angles.emplace_back(direction);
+            eraseAndAddNew(beg);
             continue;
         }
         if(beg->getPosition().x + beg->getOrigin().x < 0.f)
         {
-            angles.erase(angles.begin() + (beg - sprites.begin()));
-            auto cpy = *beg;
-            beg = sprites.erase(beg);
-            sprites.push_back(std::move(cpy));
-            sprites.back().setPosition(random(0, windowWidth), random(0, windowHeight));
-            angles.emplace_back(direction);
+            eraseAndAddNew(beg);
             continue;
         }
         beg->rotate(1);
