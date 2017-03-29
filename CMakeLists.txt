@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++14")
 
 find_package(SFML 2 REQUIRED system graphics window network)
 
-include_directories(${SFML_INCLUDE_DIR})
+include_directories(${SFML_INCLUDE_DIR} "./")
 
 file(GLOB_RECURSE SRC_FILES
   "*.hpp"

@@ -2,9 +2,14 @@
 #ifndef MESSAGE_DECODER_HPP
 #define MESSAGE_DECODER_HPP
 //---------------------------------------------------------------------------------------
-#include "../common_data.hpp"
+#include "server/common_data.hpp"
 #include "server_interfaces.hpp"
 #include "server_protocol.hpp"
+//---------------------------------------------------------------------------------------
+// Standart decoder.
+// You can write your decoder, but he's should respond follows demands:
+//  - He should have method, called "addDataAndTryToDecode", which can be used for decoding message, if received
+//  - He should contain IServerBase interface and call this, when you want send decoding message to server parse.
 //---------------------------------------------------------------------------------------
 namespace server
 {
@@ -26,6 +31,7 @@ private:
   bool readFirstByte(protocol::Message & msg);
   bool readDirectionByte(protocol::Message & msg);
   void readUserByte(protocol::Message & msg);
+  void readReserved(protocol::Message & msg);
 
   bool makeError(protocol::ErrorCode code, protocol::Error & err);
 
@@ -49,7 +55,7 @@ detail::MessageDecoder::MessageDecoder(IServerBase & server)
 //---------------------------------------------------------------------------------------
 void detail::MessageDecoder::addDataAndTryToDecode(const internal::ContainerByte & data)
 {
-  auto it = std::find(data.cbegin(), data.cend(), protocol::endOfMessage);
+  auto it = std::find(data.cbegin(), data.cend(), protocol::endOfMessageByte);
 
   if (it == data.cend())
     std::copy(data.cbegin(), data.cend(), std::back_inserter(buffer_));
@@ -65,7 +71,7 @@ void detail::MessageDecoder::addDataAndTryToDecode(const internal::ContainerByte
 
       prevIt = it + 1;
 
-      it = std::find(prevIt, data.cend(), protocol::endOfMessage);
+      it = std::find(prevIt, data.cend(), protocol::endOfMessageByte);
     }
   }
 }
@@ -139,7 +145,9 @@ bool detail::MessageDecoder::readDirectionByte(protocol::Message & msg)
 //---------------------------------------------------------------------------------------
 void detail::MessageDecoder::readUserByte(protocol::Message & msg)
 {
-  msg.header_.toClient_ = buffer_.front();
+  if (msg.header_.dir_ == protocol::Direction::ToConcreteClient)
+    msg.header_.toClient_ = buffer_.front();
+
   buffer_.pop_front();
 }
 //---------------------------------------------------------------------------------------
