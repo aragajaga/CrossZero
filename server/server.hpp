@@ -18,7 +18,7 @@
 #include "detail/server_interfaces.hpp"
 #include "detail/message_decoder.hpp"
 #include "detail/socket_container.hpp"
-#include "common_data.hpp"
+#include "server_listener.hpp"
 //---------------------------------------------------------------------------------------
 namespace server
 {
