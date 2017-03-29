@@ -29,10 +29,10 @@
 //  - third byte provide, who concrete receive message, but he's will be filled only if second byte equals to command "to concrete client"
 //  - reserved bytes unused yet, but he's should be decoding(just remove from buffer)
 //
-// All message bodies should be ending on byte, called "endOfMessageByte"
+// All message bodies should be ending on byte, called "EndOfMessageByte"
 // If it's byte has not be detected, server will be wait other part of bytes.
 // Wherein, while server wait other part of bytes, server can't receive others messages.
-// More precisely, he's receive this, and if he's contain "endOfMessageByte", then decoding continues!
+// More precisely, he's receive this, and if he's contain "EndOfMessageByte", then decoding continues!
 // Be carefully!!!
 //
 // To avoid errors, I'm advice follow this manual!
@@ -90,8 +90,12 @@ struct Message
   MessageBody   body_;
 };
 //---------------------------------------------------------------------------------------
-constexpr const uint8_t  endOfMessageByte = 0x00;
-constexpr const uint32_t minimumToDecodeSize = sizeof(MessageHeader);
+enum : uint8_t  { EndOfMessageByte = 0x00 };
+enum : uint32_t
+{
+  MinimumToDecodeSize = sizeof(MessageHeader),
+  ReservedBytesSize = sizeof(MessageHeader::reserved)
+};
 //---------------------------------------------------------------------------------------
 } //protocol
 } //server

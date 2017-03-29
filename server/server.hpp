@@ -7,12 +7,12 @@
 // - add listener
 // - add messages handler
 // - add errors handler
+// - add server
 //---------------------------------------------------------------------------------------
 #ifndef SERVER_HPP
 #define SERVER_HPP
 //---------------------------------------------------------------------------------------
 #include <SFML/Network.hpp>
-#include <memory>
 //---------------------------------------------------------------------------------------
 #include "detail/server_protocol.hpp"
 #include "detail/server_interfaces.hpp"

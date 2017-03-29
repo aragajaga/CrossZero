@@ -55,7 +55,7 @@ detail::MessageDecoder::MessageDecoder(IServerBase & server)
 //---------------------------------------------------------------------------------------
 void detail::MessageDecoder::addDataAndTryToDecode(const internal::ContainerByte & data)
 {
-  auto it = std::find(data.cbegin(), data.cend(), protocol::endOfMessageByte);
+  auto it = std::find(data.cbegin(), data.cend(), protocol::EndOfMessageByte);
 
   if (it == data.cend())
     std::copy(data.cbegin(), data.cend(), std::back_inserter(buffer_));
@@ -71,7 +71,7 @@ void detail::MessageDecoder::addDataAndTryToDecode(const internal::ContainerByte
 
       prevIt = it + 1;
 
-      it = std::find(prevIt, data.cend(), protocol::endOfMessageByte);
+      it = std::find(prevIt, data.cend(), protocol::EndOfMessageByte);
     }
   }
 }
@@ -89,7 +89,7 @@ void detail::MessageDecoder::tryToDecode()
 //---------------------------------------------------------------------------------------
 bool detail::MessageDecoder::parseBuffer(protocol::Message & msg, protocol::Error & error)
 {
-  if (buffer_.size() <protocol::minimumToDecodeSize)
+  if (buffer_.size() <protocol::MinimumToDecodeSize)
     return makeError(protocol::ErrorCode::NoDataForDecoding, error);
 
   if (!readFirstByte(msg))
@@ -149,6 +149,15 @@ void detail::MessageDecoder::readUserByte(protocol::Message & msg)
     msg.header_.toClient_ = buffer_.front();
 
   buffer_.pop_front();
+}
+//---------------------------------------------------------------------------------------
+void detail::MessageDecoder::readReserved(protocol::Message & msg)
+{
+  for (uint32_t it = 0; it < protocol::ReservedBytesSize; ++it)
+  {
+    msg.header_.reserved[it] = buffer_.front();
+    buffer_.pop_front();
+  }
 }
 //---------------------------------------------------------------------------------------
 bool detail::MessageDecoder::makeError(protocol::ErrorCode code, protocol::Error & err)
