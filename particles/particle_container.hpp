@@ -4,7 +4,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 #include "particle_traits.hpp"
 
-template<typename ParticleTraits = DefaultParticleTraits>
+template<typename ParticleTraits = parts::DefaultParticleTraits>
 struct ParticleContainer
 {
     ParticleContainer() = default;

@@ -13,6 +13,7 @@ include_directories(${SFML_INCLUDE_DIR} "./")
 file(GLOB_RECURSE SRC_FILES
   "*.hpp"
   "*.cpp"
+  "*.tcc"
 )
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})

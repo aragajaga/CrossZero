@@ -1,7 +1,7 @@
 #ifndef CROSSZERO_UI_COLORSCHEME_HPP
 #define CROSSZERO_UI_COLORSCHEME_HPP
 
-#include "../stdafx.hpp"
+#include "stdafx.hpp"
 
 namespace Color {
 
