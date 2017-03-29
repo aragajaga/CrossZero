@@ -13,8 +13,6 @@
 //---------------------------------------------------------------------------------------
 #include <SFML/Network.hpp>
 #include <memory>
-#include <deque>
-#include <cstdint>
 //---------------------------------------------------------------------------------------
 #include "detail/server_protocol.hpp"
 #include "detail/server_interfaces.hpp"
