@@ -1,0 +1,21 @@
+sudo: required
+language: generic
+dist: trusty
+
+before_install:
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get update
+  
+install:
+  - sudo apt-get install gcc-6 g++-6 -y
+  - g++-6 -v
+  - wget https://www.sfml-dev.org/files/SFML-2.4.2-linux-gcc-64-bit.tar.gz
+  - tar -xvzf SFML-2.4.2-linux-gcc-64-bit.tar.gz
+  - pwd
+  - ls -alt
+  - sudo cp -r ./SFML-2.4.2/include/* /usr/local/include/
+  - sudo cp -r ./SFML-2.4.2/lib/* /usr/local/lib/
+
+script:
+  - cmake -DCMAKE_CXX_COMPILER=g++-6 -DCMAKE_CC_COMPILER=gcc-6 ./
+  - make
