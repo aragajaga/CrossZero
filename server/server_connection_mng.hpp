@@ -18,6 +18,11 @@ public:
   ServerConnectionMng(uint16_t port);
   ~ServerConnectionMng();
 
+  ServerConnectionMng(const ServerConnectionMng &) = delete;
+  ServerConnectionMng(ServerConnectionMng &&) = delete;
+  ServerConnectionMng & operator =(const ServerConnectionMng &) = delete;
+  ServerConnectionMng & operator =(ServerConnectionMng &&) = delete;
+
   void setPort(uint16_t port);
 
   void listen();
@@ -64,7 +69,8 @@ void ServerConnectionMng::setPort(uint16_t port)
 //---------------------------------------------------------------------------------------
 void ServerConnectionMng::listen()
 {
-  thread_ = std::thread([&] { listener_.listenPort(port_); });
+  if (thread_.joinable())
+    thread_ = std::thread([&] { listener_.listenPort(port_); });
 }
 //---------------------------------------------------------------------------------------
 void ServerConnectionMng::onNewConnect(sf::TcpSocket & newConnection)
@@ -73,7 +79,7 @@ void ServerConnectionMng::onNewConnect(sf::TcpSocket & newConnection)
   std::cout << "Address: " << newConnection.getRemoteAddress() << "\n";
 }
 //---------------------------------------------------------------------------------------
-}
+} //server
 //---------------------------------------------------------------------------------------
 #endif // SERVER_CONNECTION_MNG_HPP
 //---------------------------------------------------------------------------------------
