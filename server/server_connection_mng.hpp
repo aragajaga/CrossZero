@@ -6,6 +6,7 @@
 #include <iostream>
 //---------------------------------------------------------------------------------------
 #include "detail/server_interfaces.hpp"
+#include "detail/socket_container.hpp"
 #include "server_listener.hpp"
 //---------------------------------------------------------------------------------------
 namespace server
@@ -28,11 +29,12 @@ public:
   void listen();
 
   //IServerConnectionMng interface
-  virtual void onNewConnect(sf::TcpSocket & newConnection) override;
+  virtual void onNewConnect(std::shared_ptr<sf::TcpSocket> && newConnection) override;
 
 private:
   uint16_t port_;
   ServerListener listener_;
+  TcpSocketContainer container_;
   std::thread thread_;
 };
 //---------------------------------------------------------------------------------------
@@ -69,14 +71,13 @@ void ServerConnectionMng::setPort(uint16_t port)
 //---------------------------------------------------------------------------------------
 void ServerConnectionMng::listen()
 {
-  if (thread_.joinable())
+  if (!thread_.joinable())
     thread_ = std::thread([&] { listener_.listenPort(port_); });
 }
 //---------------------------------------------------------------------------------------
-void ServerConnectionMng::onNewConnect(sf::TcpSocket & newConnection)
+void ServerConnectionMng::onNewConnect(std::shared_ptr<sf::TcpSocket> && newConnection)
 {
-  std::cout << "New connection\n";
-  std::cout << "Address: " << newConnection.getRemoteAddress() << "\n";
+  container_.pushClient(std::move(newConnection));
 }
 //---------------------------------------------------------------------------------------
 } //server

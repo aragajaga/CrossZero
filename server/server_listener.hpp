@@ -52,12 +52,14 @@ void ServerListener::listenPort(uint16_t port)
   while (listen_ && listener_.listen(port) != sf::Socket::Done)
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
+  auto sock = std::make_shared<sf::TcpSocket>();
+
   while (listen_)
   {
-    sf::TcpSocket sock;
-    if (listener_.accept(sock) == sf::Socket::Done)
+    if (listener_.accept(*sock) == sf::Socket::Done)
     {
-      connectionMng_.onNewConnect(sock);
+      connectionMng_.onNewConnect(std::move(sock));
+      sock = std::make_shared<sf::TcpSocket>();
     }
 
     std::this_thread::sleep_for(std::chrono::seconds(1));

@@ -13,14 +13,14 @@ namespace detail
 template<typename Socket>
 class SocketContainer
 {
-  using SocketPtr = std::unique_ptr<Socket>;
+  using SocketPtr = std::shared_ptr<Socket>;
 
 public:
 
-  void pushClient(SocketPtr newClient);
+  void pushClient(SocketPtr && newClient);
 
-  template<typename ... Args>
-  void emplaceClient(Args && ... args);
+  SocketPtr getClient(size_t index) const;
+  SocketPtr getAtClient(size_t index) const;
 
 private:
 
@@ -36,17 +36,30 @@ private:
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 template<typename Socket>
-void detail::SocketContainer<Socket>::pushClient(SocketPtr newClient)
+void detail::SocketContainer<Socket>::pushClient(SocketPtr && newClient)
 {
   sockets_.push_back(std::move(newClient));
 }
 //---------------------------------------------------------------------------------------
 template<typename Socket>
-template<typename ... Args>
-void detail::SocketContainer<Socket>::emplaceClient(Args && ... args)
+typename detail::SocketContainer<Socket>::SocketPtr
+  detail::SocketContainer<Socket>::getClient(size_t index) const
 {
-  sockets_.emplace_back(std::forward<Args>(args)...);
+  return sockets_[index];
 }
+//---------------------------------------------------------------------------------------
+template<typename Socket>
+typename detail::SocketContainer<Socket>::SocketPtr
+  detail::SocketContainer<Socket>::getAtClient(size_t index) const
+{
+  if (index < 0 || index >= sockets_.size())
+    throw std::out_of_range("out of range socket container");
+
+  return sockets_[index];
+}
+//---------------------------------------------------------------------------------------
+using TcpSocketContainer = detail::SocketContainer<sf::TcpSocket>;
+using UdpSocketContainer = detail::SocketContainer<sf::UdpSocket>;
 //---------------------------------------------------------------------------------------
 } //server
 //---------------------------------------------------------------------------------------

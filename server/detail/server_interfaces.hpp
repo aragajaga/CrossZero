@@ -3,6 +3,7 @@
 #define SERVER_INTERFACES_HPP
 //---------------------------------------------------------------------------------------
 #include <SFML/Network.hpp>
+#include <memory>
 //---------------------------------------------------------------------------------------
 #include "server_protocol.hpp"
 //---------------------------------------------------------------------------------------
@@ -23,7 +24,7 @@ struct IServerConnectionMng
 {
   virtual ~IServerConnectionMng() {}
 
-  virtual void onNewConnect(sf::TcpSocket & newConnection) = 0;
+  virtual void onNewConnect(std::shared_ptr<sf::TcpSocket> && newConnection) = 0;
 };
 //---------------------------------------------------------------------------------------
 } //detail
