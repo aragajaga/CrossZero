@@ -1,33 +1,33 @@
 //---------------------------------------------------------------------------------------
-#ifndef SOCKET_CONTAINER_HPP
-#define SOCKET_CONTAINER_HPP
+#ifndef SERVER_LISTENER_HPP
+#define SERVER_LISTENER_HPP
 //---------------------------------------------------------------------------------------
-#include <vector>
-#include <memory>
+#include <SFML/Network.hpp>
+#include <thread>
+#include <chrono>
+#include <atomic>
+#include <iostream>
+//---------------------------------------------------------------------------------------
+#include "detail/server_interfaces.hpp"
 //---------------------------------------------------------------------------------------
 namespace server
 {
-namespace detail
-{
 //---------------------------------------------------------------------------------------
-template<typename Socket>
-class SocketContainer
+class ServerListener
 {
-  using SocketPtr = std::shared_ptr<Socket>;
-
 public:
+  ServerListener(detail::IServerConnectionMng & connectionMng);
 
-  void pushClient(SocketPtr && newClient);
+  void listenPort(uint16_t port);
 
-  SocketPtr getClient(size_t index) const;
-  SocketPtr getAtClient(size_t index) const;
+  void setListen(bool listen);
 
 private:
+  sf::TcpListener listener_;
+  std::atomic<bool> listen_;
 
-  std::vector<SocketPtr> sockets_;
+  detail::IServerConnectionMng & connectionMng_;
 };
-//---------------------------------------------------------------------------------------
-} //detail
 //---------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------
@@ -35,33 +35,43 @@ private:
 // IMPLEMENTATION
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
-template<typename Socket>
-void detail::SocketContainer<Socket>::pushClient(SocketPtr && newClient)
-{
-  sockets_.push_back(std::move(newClient));
-}
-//---------------------------------------------------------------------------------------
-template<typename Socket>
-typename detail::SocketContainer<Socket>::SocketPtr
-  detail::SocketContainer<Socket>::getClient(size_t index) const
-{
-  return sockets_[index];
-}
-//---------------------------------------------------------------------------------------
-template<typename Socket>
-typename detail::SocketContainer<Socket>::SocketPtr
-  detail::SocketContainer<Socket>::getAtClient(size_t index) const
-{
-  if (index < 0 || index >= sockets_.size())
-    throw std::out_of_range("out of range socket container");
 
-  return sockets_[index];
+//---------------------------------------------------------------------------------------
+ServerListener::ServerListener(detail::IServerConnectionMng & connectionMng)
+  :
+  connectionMng_(connectionMng)
+{
+  listen_ = true;
+  listener_.setBlocking(false);
 }
 //---------------------------------------------------------------------------------------
-using TcpSocketContainer = detail::SocketContainer<sf::TcpSocket>;
-using UdpSocketContainer = detail::SocketContainer<sf::UdpSocket>;
+void ServerListener::listenPort(uint16_t port)
+{
+  listen_ = true;
+
+  while (listen_ && listener_.listen(port) != sf::Socket::Done)
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+  auto sock = std::make_shared<sf::TcpSocket>();
+
+  while (listen_)
+  {
+    if (listener_.accept(*sock) == sf::Socket::Done)
+    {
+      connectionMng_.onNewConnect(std::move(sock));
+      sock = std::make_shared<sf::TcpSocket>();
+    }
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+}
 //---------------------------------------------------------------------------------------
-} //server
+void ServerListener::setListen(bool listen)
+{
+  listen_ = listen;
+}
 //---------------------------------------------------------------------------------------
-#endif // SOCKET_CONTAINER_HPP
+}
+//---------------------------------------------------------------------------------------
+#endif // SERVER_LISTENER_HPP
 //---------------------------------------------------------------------------------------

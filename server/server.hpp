@@ -4,7 +4,6 @@
 // Link on github.com: https://github.com/GbaLog
 //---------------------------------------------------------------------------------------
 // TODO:
-// - add listener
 // - add messages handler
 // - add errors handler
 // - add server
@@ -18,15 +17,8 @@
 #include "detail/server_interfaces.hpp"
 #include "detail/message_decoder.hpp"
 #include "detail/socket_container.hpp"
-#include "common_data.hpp"
-//---------------------------------------------------------------------------------------
-namespace server
-{
-//---------------------------------------------------------------------------------------
-using TcpSocketContainer = detail::SocketContainer<sf::TcpSocket>;
-using UdpSocketContainer = detail::SocketContainer<sf::UdpSocket>;
-//---------------------------------------------------------------------------------------
-} //server
+#include "server_listener.hpp"
+#include "server_connection_mng.hpp"
 //---------------------------------------------------------------------------------------
 #endif //SERVER_HPP
 //---------------------------------------------------------------------------------------

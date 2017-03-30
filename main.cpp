@@ -9,12 +9,18 @@
 #include "simple_particles.hpp"
 #include "mainmenu.hpp"
 #include "effects.hpp"
+#include "server/server.hpp"
 
 sf::Font arial;
 Screen screen;
 
 int main(int argc, char* argv[])
 {
+  server::ServerConnectionMng mng;
+  mng.listen();
+
+  sf::TcpSocket sock;
+  sock.connect("192.168.10.38", 1337);
     /*//////////////////////////////
     // INITIALIZATION             //
     //////////////////////////////*/
@@ -39,7 +45,7 @@ int main(int argc, char* argv[])
         .add("res/xo.png", sf::IntRect(0, 0, 24, 24), 10)
         .add("res/xo.png", sf::IntRect(24, 0, 24, 24), 10)
         .setWindowParams(screen.getWnd()->getSize().x, screen.getWnd()->getSize().y)
-        .setSpeed(0.1f)
+        .setSpeed(0.5f)
         .build();
 
 
