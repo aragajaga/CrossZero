@@ -23,7 +23,7 @@ struct IServerConnectionMng
 {
   virtual ~IServerConnectionMng() {}
 
-  virtual void onNewConnect(const sf::TcpSocket & newConnection) = 0;
+  virtual void onNewConnect(sf::TcpSocket & newConnection) = 0;
 };
 //---------------------------------------------------------------------------------------
 } //detail

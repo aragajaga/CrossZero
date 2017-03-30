@@ -4,7 +4,6 @@
 // Link on github.com: https://github.com/GbaLog
 //---------------------------------------------------------------------------------------
 // TODO:
-// - add listener
 // - add messages handler
 // - add errors handler
 // - add server
@@ -19,6 +18,7 @@
 #include "detail/message_decoder.hpp"
 #include "detail/socket_container.hpp"
 #include "server_listener.hpp"
+#include "server_connection_mng.hpp"
 //---------------------------------------------------------------------------------------
 namespace server
 {

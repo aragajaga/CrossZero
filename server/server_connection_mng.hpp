@@ -1,32 +1,34 @@
 //---------------------------------------------------------------------------------------
-#ifndef SERVER_LISTENER_HPP
-#define SERVER_LISTENER_HPP
+#ifndef SERVER_CONNECTION_MNG_HPP
+#define SERVER_CONNECTION_MNG_HPP
 //---------------------------------------------------------------------------------------
-#include <SFML/Network.hpp>
 #include <thread>
-#include <chrono>
-#include <atomic>
 #include <iostream>
 //---------------------------------------------------------------------------------------
 #include "detail/server_interfaces.hpp"
+#include "server_listener.hpp"
 //---------------------------------------------------------------------------------------
 namespace server
 {
 //---------------------------------------------------------------------------------------
-class ServerListener
+class ServerConnectionMng : public detail::IServerConnectionMng
 {
 public:
-  ServerListener(detail::IServerConnectionMng & connectionMng);
+  ServerConnectionMng();
+  ServerConnectionMng(uint16_t port);
+  ~ServerConnectionMng();
 
-  void listenPort(uint16_t port);
+  void setPort(uint16_t port);
 
-  void setListen(bool listen);
+  void listen();
+
+  //IServerConnectionMng interface
+  virtual void onNewConnect(sf::TcpSocket & newConnection) override;
 
 private:
-  sf::TcpListener listener_;
-  std::atomic<bool> listen_;
-
-  detail::IServerConnectionMng & connectionMng_;
+  uint16_t port_;
+  ServerListener listener_;
+  std::thread thread_;
 };
 //---------------------------------------------------------------------------------------
 
@@ -37,39 +39,41 @@ private:
 //---------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------
-ServerListener::ServerListener(detail::IServerConnectionMng & connectionMng)
+ServerConnectionMng::ServerConnectionMng()
   :
-  connectionMng_(connectionMng)
+  port_(1337),
+  listener_(*this)
+{}
+//---------------------------------------------------------------------------------------
+ServerConnectionMng::ServerConnectionMng(uint16_t port)
+  :
+  port_(port),
+  listener_(*this)
+{}
+//---------------------------------------------------------------------------------------
+ServerConnectionMng::~ServerConnectionMng()
 {
-  listen_ = true;
-  listener_.setBlocking(false);
+  listener_.setListen(false);
+  thread_.join();
 }
 //---------------------------------------------------------------------------------------
-void ServerListener::listenPort(uint16_t port)
+void ServerConnectionMng::setPort(uint16_t port)
 {
-  listen_ = true;
-
-  while (listen_ && listener_.listen(port) != sf::Socket::Done)
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-
-  while (listen_)
-  {
-    sf::TcpSocket sock;
-    if (listener_.accept(sock) == sf::Socket::Done)
-    {
-      connectionMng_.onNewConnect(sock);
-    }
-
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-  }
+  port_ = port;
 }
 //---------------------------------------------------------------------------------------
-void ServerListener::setListen(bool listen)
+void ServerConnectionMng::listen()
 {
-  listen_ = listen;
+  thread_ = std::thread([&] { listener_.listenPort(port_); });
+}
+//---------------------------------------------------------------------------------------
+void ServerConnectionMng::onNewConnect(sf::TcpSocket & newConnection)
+{
+  std::cout << "New connection\n";
+  std::cout << "Address: " << newConnection.getRemoteAddress() << "\n";
 }
 //---------------------------------------------------------------------------------------
 }
 //---------------------------------------------------------------------------------------
-#endif // SERVER_LISTENER_HPP
+#endif // SERVER_CONNECTION_MNG_HPP
 //---------------------------------------------------------------------------------------
