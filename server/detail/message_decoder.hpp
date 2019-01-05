@@ -2,7 +2,7 @@
 #ifndef MESSAGE_DECODER_HPP
 #define MESSAGE_DECODER_HPP
 //---------------------------------------------------------------------------------------
-#include "server/common_data.hpp"
+#include "../common_data.hpp"
 #include "server_interfaces.hpp"
 #include "server_protocol.hpp"
 //---------------------------------------------------------------------------------------

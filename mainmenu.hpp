@@ -2,7 +2,7 @@
 #define CROSSZERO_MAINMENU_HPP
 
 #include "stdafx.hpp"
-#include "ui/button.hpp"
+#include "button.hpp"
 #include "ScreenManager.hpp"
 
 extern Screen screen;

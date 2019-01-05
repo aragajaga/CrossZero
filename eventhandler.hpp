@@ -2,7 +2,7 @@
 #define CROSSZERO_EVENTHANDLER_HPP
 
 #include "stdafx.hpp"
-#include "ui/control.hpp"
+#include "control.hpp"
 
 class EventHandler {
 public:

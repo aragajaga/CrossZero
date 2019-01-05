@@ -2,8 +2,8 @@
 #include <cmath>
 #include <random>
 #include "eventhandler.hpp"
-#include "ui/colorscheme.hpp"
-#include "ui/button.hpp"
+#include "colorscheme.hpp"
+#include "button.hpp"
 #include "RoundedRectangleShape.hpp"
 #include "ScreenManager.hpp"
 #include "simple_particles.hpp"
