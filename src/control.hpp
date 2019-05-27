@@ -1,8 +1,9 @@
-#pragma once
+#ifndef CONTROL_HPP
+#define CONTROL_HPP
 
 #include "stdafx.hpp"
-#include "UI/color_scheme.hpp"
-#include "UI/draw/rounded_rectangle.hpp"
+#include "color_scheme.hpp"
+#include "rounded_rectangle.hpp"
 
 namespace UI {
 namespace Controls {
@@ -23,3 +24,4 @@ protected:
 }
 }
 
+#endif // CONTROL_HPP

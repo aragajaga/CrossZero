@@ -14,14 +14,13 @@ include_directories("${CMAKE_SOURCE_DIR}/src")
 
 set(SRC_FILES
   "src/tools/random.cpp"
-  "src/ui/controls/control.cpp"
-  "src/ui/controls/button.cpp"
-  "src/ui/controls/edit.cpp"
-# "src/ui/draw/raster_rounded_rectangle.cpp"
-  "src/ui/draw/rounded_rectangle.cpp"
-  "src/ui/screens/screen.cpp"
-  "src/ui/main_menu.cpp"
-  "src/ui/controls"
+  "src/control.cpp"
+  "src/button.cpp"
+  "src/edit.cpp"
+# "src/raster_rounded_rectangle.cpp"
+  "src/rounded_rectangle.cpp"
+  "src/screen.cpp"
+  "src/main_menu.cpp"
   "src/main.cpp"
 )
 

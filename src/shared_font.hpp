@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SHARED_FONT_HPP
+#define SHARED_FONT_HPP
 
 #include <SFML/Graphics.hpp>
 
@@ -16,3 +17,5 @@ public:
 
     sf::Font font;
 };
+
+#endif // SHARED_FONT_HPP

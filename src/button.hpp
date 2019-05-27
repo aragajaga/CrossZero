@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BUTTON_HPP
+#define BUTTON_HPP
 
 #include "control.hpp"
 
@@ -19,3 +20,5 @@ private:
 
 }
 }
+
+#endif // BUTTON_HPP

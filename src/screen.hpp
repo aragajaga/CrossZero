@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SCREEN_HPP
+#define SCREEN_HPP
 
 #include "UI/simple_particles.hpp"
 #include <SFML/Graphics.hpp>
@@ -59,3 +60,5 @@ public:
 } // namespace Screen
 
 } // namespace UI
+
+#endif // SCREEN_HPP
