@@ -53,7 +53,7 @@ public:
     Settings();
     int Run(sf::RenderWindow& app);
 public:
-    sf::Text bletZabylSlovo_OTREFACTORIT_SROCHNA;
+    sf::Text splash;
 };
 
 } // namespace Screen

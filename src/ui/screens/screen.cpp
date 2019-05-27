@@ -36,7 +36,7 @@ MainMenu::MainMenu()
     header.setFillColor(sf::Color::White);
 
     version.setFont(SharedFont::getInstance().font);
-    version.setString("0.2.0a");
+    version.setString("Some text in top-right corner.");
     version.setCharacterSize(24);
     version.setFillColor(sf::Color::White);
     version.setOutlineColor(sf::Color::Black);
@@ -92,21 +92,21 @@ int FPSCounter::Run(sf::RenderWindow& app)
 
 Settings::Settings()
 {
-    bletZabylSlovo_OTREFACTORIT_SROCHNA.setFont(SharedFont::getInstance().font);
-    bletZabylSlovo_OTREFACTORIT_SROCHNA.setString("UI::Screen::Settings");
-    bletZabylSlovo_OTREFACTORIT_SROCHNA.setOutlineColor(sf::Color::Black);
-    bletZabylSlovo_OTREFACTORIT_SROCHNA.setOutlineThickness(1.f);
-    bletZabylSlovo_OTREFACTORIT_SROCHNA.setFillColor(sf::Color::White);
+    splash.setFont(SharedFont::getInstance().font);
+    splash.setString("UI::Screen::Settings");
+    splash.setOutlineColor(sf::Color::Black);
+    splash.setOutlineThickness(1.f);
+    splash.setFillColor(sf::Color::White);
 }
 
 Settings::Run(sf::RenderWindow& app)
 {
-    bletZabylSlovo_OTREFACTORIT_SROCHNA.setPosition(
-        (app.getSize().x - bletZabylSlovo_OTREFACTORIT_SROCHNA.getLocalBounds().width) / 2,
-        (app.getSize().y - bletZabylSlovo_OTREFACTORIT_SROCHNA.getLocalBounds().height) / 2
+    splash.setPosition(
+        (app.getSize().x - splash.getLocalBounds().width) / 2,
+        (app.getSize().y - splash.getLocalBounds().height) / 2
     );
 
-    app.draw(bletZabylSlovo_OTREFACTORIT_SROCHNA);
+    app.draw(splash);
 }
 
 }
