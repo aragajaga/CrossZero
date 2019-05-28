@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "screen.hpp"
+#include "settings_screen.hpp"
 #include "shared_font.hpp"
 #include "server/server.hpp"
 

@@ -47,16 +47,6 @@ private:
     sf::Clock clock;
 };
 
-//------------------------------------------------------------------------------
-
-class Settings : public Base {
-public:
-    Settings();
-    int Run(sf::RenderWindow& app);
-public:
-    sf::Text splash;
-};
-
 } // namespace Screen
 
 } // namespace UI

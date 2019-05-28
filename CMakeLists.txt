@@ -20,6 +20,7 @@ set(SRC_FILES
 # "src/raster_rounded_rectangle.cpp"
   "src/rounded_rectangle.cpp"
   "src/screen.cpp"
+  "src/settings_screen.cpp"
   "src/main_menu.cpp"
   "src/main.cpp"
 )

@@ -20,7 +20,7 @@ int Background::Run(sf::RenderWindow& app)
 	parts.setWindowParams(app.getSize().x, app.getSize().y);
     parts.update(box);
 
-    app.clear(sf::Color::Red);
+    app.clear();
 	for (const auto& it: parts.getSprites())
         app.draw(it);
 	return 0;
@@ -86,27 +86,6 @@ int FPSCounter::Run(sf::RenderWindow& app)
     );
     app.draw(fps);
     return 0;
-}
-
-//------------------------------------------------------------------------------
-
-Settings::Settings()
-{
-    splash.setFont(SharedFont::getInstance().font);
-    splash.setString("UI::Screen::Settings");
-    splash.setOutlineColor(sf::Color::Black);
-    splash.setOutlineThickness(1.f);
-    splash.setFillColor(sf::Color::White);
-}
-
-int Settings::Run(sf::RenderWindow& app)
-{
-    splash.setPosition(
-        (app.getSize().x - splash.getLocalBounds().width) / 2,
-        (app.getSize().y - splash.getLocalBounds().height) / 2
-    );
-
-    app.draw(splash);
 }
 
 }

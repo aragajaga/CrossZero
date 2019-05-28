@@ -1,7 +1,6 @@
 #include "control.hpp"
 
-namespace UI {
-namespace Controls {
+namespace UI::Controls {
 
 void Control::setSize(const sf::Vector2f& size)
 {
@@ -25,5 +24,4 @@ void Control::update() const
 
 }
 
-}
 }
