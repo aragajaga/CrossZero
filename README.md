@@ -13,7 +13,8 @@ cmake ./
 make
 ```
 
-Если CMake не удалось найти установленный SFML, задайте его вручную: ```-SFML_INCLUDE_DIR=<путь_к_заголовкам> -SFML_LIBRARIES=<путь_к_библиотекам>```
+Если CMake не удалось найти установленный SFML, добавьте путь к нему в `CMAKE_PREFIX_PATH`. Например: ```-DCMAKE_PREFIX_PATH="C:\\SFML-2.5.1\\"```
+> С CMake версии >3.12 больше нелья использовать `-DSFML_ROOT` https://cmake.org/cmake/help/git-stage/policy/CMP0074.html
 
 ## Лицензия
 Код распространяется по лицензии GNU GPLv3. Текст лицензии Вы можете прочитать в файле LICENSE.
