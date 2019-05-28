@@ -99,7 +99,7 @@ Settings::Settings()
     splash.setFillColor(sf::Color::White);
 }
 
-Settings::Run(sf::RenderWindow& app)
+int Settings::Run(sf::RenderWindow& app)
 {
     splash.setPosition(
         (app.getSize().x - splash.getLocalBounds().width) / 2,
