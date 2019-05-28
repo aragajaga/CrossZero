@@ -17,7 +17,7 @@ int main(int argc, char * argv[]) {
     sf::ContextSettings settings;
     //settings.antialiasingLevel = 8;
 
-    sf::RenderWindow app(sf::VideoMode(640, 480), "CrossZero", sf::Style::Default, settings);
+    sf::RenderWindow app(sf::VideoMode(640, 360), "CrossZero", sf::Style::Default, settings);
 
     sf::View view(app.getDefaultView());
     app.setFramerateLimit(60);
@@ -28,12 +28,12 @@ int main(int argc, char * argv[]) {
 	int screen = 0;
 
 	UI::Screen::Background background;
-    UI::Screen::MainMenu main_menu;
+    UI::Screen::TitleScreen titleScreen;
 	UI::Screen::FPSCounter fps_counter;
 	UI::Screen::Settings settings_menu;
 	screens = {
         &background,
-        &main_menu,
+        &titleScreen,
         &settings_menu,
         &fps_counter
 	};

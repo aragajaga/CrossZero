@@ -26,14 +26,14 @@ private:
 
 //------------------------------------------------------------------------------
 
-class MainMenu : public Base {
+class TitleScreen : public Base {
 public:
-    MainMenu();
+    TitleScreen();
     int Run(sf::RenderWindow& app);
 private:
     sf::Text header;
     sf::Text version;
-    ::MainMenu mainMenu;
+    ::MainMenu menu;
 };
 
 //------------------------------------------------------------------------------

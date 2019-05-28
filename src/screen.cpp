@@ -28,8 +28,8 @@ int Background::Run(sf::RenderWindow& app)
 
 //------------------------------------------------------------------------------
 
-MainMenu::MainMenu()
-: mainMenu(::MainMenu(3))
+TitleScreen::TitleScreen()
+: menu(::MainMenu(3))
 {
     header.setFont(SharedFont::getInstance().font);
     header.setString("CrossZero");
@@ -43,7 +43,7 @@ MainMenu::MainMenu()
     version.setOutlineThickness(1.f);
 }
 
-int MainMenu::Run(sf::RenderWindow& app)
+int TitleScreen::Run(sf::RenderWindow& app)
 {
     header.setCharacterSize(app.getSize().y * 72 / 480);
     header.setPosition(
@@ -56,14 +56,14 @@ int MainMenu::Run(sf::RenderWindow& app)
         10
     );
 
-    mainMenu[0].setString("Play");
-    mainMenu[1].setString("Leaderboard");
-    mainMenu[2].setString("Settings");
-    mainMenu.update(app);
+    menu[0].setString("Play");
+    menu[1].setString("Leaderboard");
+    menu[2].setString("Settings");
+    menu.update(app);
 
     app.draw(header);
     app.draw(version);
-    app.draw(mainMenu);
+    app.draw(menu);
 
     return 0;
 }
