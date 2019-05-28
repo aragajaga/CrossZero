@@ -1,6 +1,6 @@
 #include "screen.hpp"
-#include "UI/effects.hpp"
-#include "UI/shared_font.hpp"
+#include "effects.hpp"
+#include "shared_font.hpp"
 
 namespace UI {
 

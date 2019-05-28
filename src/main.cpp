@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
-#include "UI/screens/screen.hpp"
-#include "UI/shared_font.hpp"
+#include "screen.hpp"
+#include "shared_font.hpp"
 #include "server/server.hpp"
 
 int main(int argc, char * argv[]) {

@@ -1,9 +1,9 @@
 #ifndef SCREEN_HPP
 #define SCREEN_HPP
 
-#include "UI/simple_particles.hpp"
+#include "simple_particles.hpp"
 #include <SFML/Graphics.hpp>
-#include "UI/main_menu.hpp"
+#include "main_menu.hpp"
 
 namespace UI {
 
