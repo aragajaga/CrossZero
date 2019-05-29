@@ -6,12 +6,11 @@
 #include <SFML/Graphics.hpp>
 
 #include "tools/timer.hpp"
-#include "tools/random.hpp"
 #include "tools/math.hpp"
 
 #include "simple_particles.hpp"
 
-using tools::random;
+// using tools::random;
 //---------------------------------------------------------------------------------------
 void box(SimpleParticles& parts)
 {
@@ -22,7 +21,7 @@ void box(SimpleParticles& parts)
     for( size_t it{}; it < sprites.size(); ++it )
     {
         sprites[it].move(
-            std::cos(angles[it]) * parts.getFactor(), 
+            std::cos(angles[it]) * parts.getFactor(),
             std::sin(angles[it]) * parts.getFactor()
         );
 
@@ -75,7 +74,7 @@ void blizzard(SimpleParticles& parts, float direction)
         if(*beg != direction)
             *beg = direction;
     }
-    
+
     auto eraseAndAddNew =
         [&] (decltype(sprites.begin()) beg)
         {
@@ -83,7 +82,7 @@ void blizzard(SimpleParticles& parts, float direction)
             auto cpy = *beg;
             beg = sprites.erase(beg);
             sprites.push_back(std::move(cpy));
-            sprites.back().setPosition(random(0, windowWidth), random(0, windowHeight));
+            sprites.back().setPosition(tools::random(0, windowWidth), tools::random(0, windowHeight));
             angles.emplace_back(direction);
         };
 

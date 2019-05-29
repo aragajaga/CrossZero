@@ -1,24 +1,23 @@
 cmake_minimum_required(VERSION 2.6)
 project(CrossZero)
 
-# Enable find_package policy
-if (POLICY CMP0074)
-  cmake_policy(SET CMP0074 NEW) # CMake 3.12
-endif ()
-
-# Strict code to C++14
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++14")
+set (CMAKE_INCLUDE_CURRENT_DIR ON)
+include_directories("./")
+include_directories("${CMAKE_SOURCE_DIR}/src")
 
 # List all source files to be compilated
 set(SRC_FILES
-	"button.cpp"
-	"control.cpp"
-	"eventhandler.cpp"
-	"main.cpp"
-	"mainmenu.cpp"
-	"RoundedRectangleShape.cpp"
-	"ScreenManager.cpp"
-)
+  "src/tools/random.cpp"
+  "src/control.cpp"
+  "src/button.cpp"
+  "src/edit.cpp"
+# "src/raster_rounded_rectangle.cpp"
+  "src/rounded_rectangle.cpp"
+  "src/screen.cpp"
+  "src/settings_screen.cpp"
+  "src/main_menu.cpp"
+  "src/main.cpp"
 
 # Name output binary executable file
 add_executable(${PROJECT_NAME} ${SRC_FILES})

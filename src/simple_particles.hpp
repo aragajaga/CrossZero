@@ -18,13 +18,12 @@
 #include "tools/random.hpp"
 #include "tools/math.hpp"
 
-using tools::random;
+// using tools::random;
 //---------------------------------------------------------------------------------------
 class SimpleParticles
 {
 
 public:
-
     SimpleParticles(
         std::vector<std::tuple<std::string, sf::IntRect, unsigned>>&& data,
         int windowWidth,
@@ -40,12 +39,12 @@ public:
         for( const auto& it : data )
             add(std::get<0>(it), std::get<1>(it), std::get<2>(it));
     }
-    
+
     tools::Timer& getTimer()
     {
         return timer;
     }
-    
+
     const tools::Timer& getTimer() const
     {
         return timer;
@@ -55,12 +54,12 @@ public:
     {
         this->speed = speed;
     }
-    
+
     const float getSpeed() const
     {
         return speed;
     }
-    
+
     const float getFactor() const
     {
         return factor;
@@ -71,13 +70,13 @@ public:
         this->windowWidth = windowWidth;
         this->windowHeight = windowHeight;
     }
-    
+
     const std::pair<int, int>& getWindowSize() const
     {
         return windowSize;
     }
-    
-    std::vector<sf::Sprite>& getSprites() 
+
+    std::vector<sf::Sprite>& getSprites()
     {
         return sprites;
     }
@@ -86,12 +85,12 @@ public:
     {
         return sprites;
     }
-    
+
     std::vector<float>& getAngles()
     {
         return angles;
     }
-    
+
     const std::vector<float>& getAngles() const
     {
         return angles;
@@ -114,13 +113,13 @@ public:
 
         for( size_t it{}; it < count; ++it )
         {
-            tmp.setPosition(random(0, windowWidth), random(0, windowHeight));
+            tmp.setPosition(tools::random(0, windowWidth), tools::random(0, windowHeight));
             sprites.push_back(tmp);
 
-            angles.emplace_back(getRadianFromDegree(random(0, 360)));
+            angles.emplace_back(getRadianFromDegree(tools::random(0, 360)));
         }
     }
-    
+
     template<typename FunctionType, typename... AdditionalParams>
     void update(FunctionType* updateFunc, AdditionalParams&&... params)
     {
@@ -133,13 +132,13 @@ private:
     float speed;
     float factor;
     std::pair<int,int> windowSize;
-    
+
     int& windowWidth;
     int& windowHeight;
-    
+
     std::vector<sf::Sprite> sprites;
     std::vector<float> angles;
-    
+
     std::vector<sf::Texture*> textures;
 };
 //---------------------------------------------------------------------------------------

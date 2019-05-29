@@ -1,6 +1,4 @@
-#include "mainmenu.hpp"
-
-extern Screen screen;
+#include "main_menu.hpp"
 
 MainMenu::MainMenu(int _count)
 {
@@ -18,25 +16,29 @@ MainMenu::MainMenu(int _count)
     }
 }
 
-void MainMenu::update()
+void MainMenu::update(sf::RenderWindow& app)
 {
-    const auto& scr = screen.getWnd()->getSize();
+    const auto& scr = app.getSize();
     const auto& sample = sampleBtn.getSize();
     auto boxH = scr.y - scr.y*((125+72)/480.f);
 
     int i = 0;
     for ( auto& num : buttons ) {
-        //num.setPosition( scr.x/2, i*20 );
-         num.setPosition( ( scr.x - scr.y * sample.y/480.f * sample.x/sample.y )/2,
-                         scr.y * 125/480.f + ( ( boxH - ( scr.y * sample.y/480.f * buttons.size() + ( scr.y * interval/480.f * (buttons.size()-1) ) ) )/2 + scr.y*(sample.y+interval)/480.f*i ) );
+        // num.setPosition( scr.x/2, i*20 );
+        num.setPosition((scr.x-scr.y*sample.y/480.f*sample.x/sample.y)/2,
+                scr.y*125/480.f+((boxH-(scr.y*sample.y/480.f*buttons.size()+
+                (scr.y*interval/480.f*(buttons.size()-1))))/2+scr.y*(sample.y+
+                interval)/480.f*i));
 
-        num.setSize( scr.y * sample.y/480.f * sample.x/sample.y, scr.y * sample.y/480.f );
+        num.setSize(scr.y * sample.y/480.f * sample.x/sample.y, scr.y *
+                sample.y/480.f);
+
         num.update();
         ++i;
     }
 }
 
-ui::Button& MainMenu::operator[](const unsigned int& i)
+UI::Controls::Button& MainMenu::operator[](const unsigned int& i)
 {
     return buttons.at(i);
 }

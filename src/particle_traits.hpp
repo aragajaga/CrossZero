@@ -2,7 +2,7 @@
 #ifndef PARTICLE_TRAITS_HPP
 #define PARTICLE_TRAITS_HPP
 //---------------------------------------------------------------------------------------
-#include "../tools/timer.hpp"
+#include "tools/timer.hpp"
 
 #include <vector>
 #include <utility>
