@@ -18,6 +18,7 @@ set(SRC_FILES
   "src/settings_screen.cpp"
   "src/main_menu.cpp"
   "src/main.cpp"
+)
 
 # Name output binary executable file
 add_executable(${PROJECT_NAME} ${SRC_FILES})
