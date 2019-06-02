@@ -6,6 +6,7 @@
 #include "mouse_event.hpp"
 
 MouseEventSubject mouseSubject;
+sf::Clock animationClock;
 
 int main(int argc, char * argv[]) {
     /* server::ServerConnectionMng mng;
@@ -32,6 +33,7 @@ int main(int argc, char * argv[]) {
 	int screen = 0;
 
 	mouseSubject = MouseEventSubject();
+    animationClock = sf::Clock();
     
     UI::Screen::Background background;
     UI::Screen::TitleScreen titleScreen;
@@ -44,7 +46,7 @@ int main(int argc, char * argv[]) {
         &fps_counter
 	};
 
-    while (screen >= 0) {
+    while (app.isOpen()) {
         sf::Event event;
         while (app.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -65,7 +67,7 @@ int main(int argc, char * argv[]) {
 
         screen = screens[screen]->Run(app);
         screens[1]->Run(app);
-        screens[2]->Run(app);
+        // screens[2]->Run(app);
         screens[3]->Run(app);
         app.display();
     }

@@ -3,6 +3,7 @@
 
 #include "mouse_event.hpp"
 #include "control.hpp"
+#include "animation.hpp"
 
 namespace UI {
 namespace Controls {
@@ -16,8 +17,18 @@ public:
     void setPosition(sf::Vector2f pos);
     void setSize(float x, float y);
     void setSize(sf::Vector2f size);
+    void setFillColor(sf::Color color);
     
+    void onMouseEnter();
+    void onMouseLeave();
     void onMouseClick();
+    void onMouseUp();
+    
+    Animation fadeInAnim;
+    Animation fadeOutAnim;
+    
+    sf::Color hoverColor;
+    sf::Color normalColor;
 private:
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 	std::wstring label;
