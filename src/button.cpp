@@ -21,6 +21,28 @@ void Button::setString(const sf::String& str)
 	update();
 }
 
+void Button::setPosition(sf::Vector2f pos)
+{
+    Control::setPosition(pos);
+    setMouseCatchOffset(pos);
+}
+
+void Button::setPosition(float x, float y)
+{
+    setPosition(sf::Vector2f(x, y));
+}
+
+void Button::setSize(sf::Vector2f size)
+{
+    Control::setSize(size);
+    setMouseCatchSize(size);
+}
+
+void Button::setSize(float x, float y)
+{
+    setSize(sf::Vector2f(x, y));
+}
+
 void Button::update()
 {
 	base.setSize( m_size );
@@ -37,6 +59,11 @@ void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	states.transform = getTransform();
 	target.draw( base, states );
 	target.draw( text, states );
+}
+
+void Button::onMouseClick()
+{
+    base.setFillColor(sf::Color::Red);
 }
 
 }
