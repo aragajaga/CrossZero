@@ -43,6 +43,14 @@ TitleScreen::TitleScreen()
     version.setOutlineThickness(1.f);
 }
 
+sf::Color mix(sf::Color a, sf::Color b, float alpha)
+{
+    a.r = (a.r * alpha) + (b.r * (1.f - alpha));
+    a.g = (a.g * alpha) + (b.g * (1.f - alpha));
+    a.b = (a.b * alpha) + (b.b * (1.f - alpha));
+    return a;
+};
+
 int TitleScreen::Run(sf::RenderWindow& app)
 {
     header.setCharacterSize(app.getSize().y * 72 / 480);
@@ -61,9 +69,34 @@ int TitleScreen::Run(sf::RenderWindow& app)
     menu[2].setString("Settings");
     menu.update(app);
 
+    for (size_t i = 0; i < 3; i++)
+    {
+        auto btn = &menu[i];
+        if (btn->fadeInAnim.isPlaying())
+        {
+            float delta = btn->fadeInAnim.getElapsed().asSeconds() / .5f;
+            
+            if (delta > 1.f)
+                btn->fadeInAnim.stop();
+            else
+                btn->setFillColor(mix(btn->hoverColor, btn->normalColor,
+                        delta));
+        } else if (btn->fadeOutAnim.isPlaying())
+        {
+            float delta = btn->fadeOutAnim.getElapsed().asSeconds() / .5f;
+            
+            if (delta > 1.f)
+                btn->fadeOutAnim.stop();
+            else
+                btn->setFillColor(mix(btn->normalColor, btn->hoverColor,
+                        delta));
+        }
+        
+        app.draw(*btn);
+    }
+
     app.draw(header);
     app.draw(version);
-    app.draw(menu);
 
     return 0;
 }

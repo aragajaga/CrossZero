@@ -1,4 +1,7 @@
 #include "main_menu.hpp"
+#include "mouse_event.hpp"
+
+extern MouseEventSubject mouseSubject;
 
 MainMenu::MainMenu(int _count)
 {
@@ -13,6 +16,8 @@ MainMenu::MainMenu(int _count)
         num.setString( std::to_wstring(i) );
         num.setPosition( sf::Vector2f( 10.f, 40.f*i ) );
         ++i;
+        
+        mouseSubject.subscribe(dynamic_cast<MouseEventObserver *> (&num));
     }
 }
 

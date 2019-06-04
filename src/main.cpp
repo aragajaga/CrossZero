@@ -3,6 +3,10 @@
 #include "settings_screen.hpp"
 #include "shared_font.hpp"
 #include "server/server.hpp"
+#include "mouse_event.hpp"
+
+MouseEventSubject mouseSubject;
+sf::Clock animationClock;
 
 int main(int argc, char * argv[]) {
     /* server::ServerConnectionMng mng;
@@ -28,7 +32,10 @@ int main(int argc, char * argv[]) {
 	std::vector<UI::Screen::Base*> screens;
 	int screen = 0;
 
-	UI::Screen::Background background;
+	mouseSubject = MouseEventSubject();
+    animationClock = sf::Clock();
+    
+    UI::Screen::Background background;
     UI::Screen::TitleScreen titleScreen;
 	UI::Screen::FPSCounter fps_counter;
 	UI::Screen::Settings settings_menu;
@@ -39,19 +46,28 @@ int main(int argc, char * argv[]) {
         &fps_counter
 	};
 
-    while (screen >= 0) {
+    while (app.isOpen()) {
         sf::Event event;
         while (app.pollEvent(event)) {
-            if (sf::Event::Closed == event.type)
+            if (event.type == sf::Event::Closed)
                 app.close();
 
-            if (sf::Event::Resized == event.type)
+            if (event.type == sf::Event::Resized)
                 app.setView(view = sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(app.getSize().x), static_cast<float>(app.getSize().y))));
+            
+            if (event.type == sf::Event::MouseMoved)
+                mouseSubject.mouseMove(event);
+            
+            if (event.type == sf::Event::MouseButtonPressed)
+                mouseSubject.click(event);
+            
+            if (event.type == sf::Event::MouseButtonReleased)
+                mouseSubject.clickRelease(event);
         }
 
         screen = screens[screen]->Run(app);
         screens[1]->Run(app);
-        screens[2]->Run(app);
+        // screens[2]->Run(app);
         screens[3]->Run(app);
         app.display();
     }

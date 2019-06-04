@@ -5,6 +5,8 @@ namespace UI {
 namespace Controls {
 
 Button::Button()
+: normalColor(sf::Color::White),
+  hoverColor(sf::Color(0x88, 0xFF, 0))
 {
 	base.setCornersRadius(2.f);
 	base.setCornerPointCount(4);
@@ -15,10 +17,37 @@ Button::Button()
 	update();
 }
 
+void Button::setFillColor(sf::Color color)
+{
+    base.setFillColor(color);
+}
+
 void Button::setString(const sf::String& str)
 {
 	text.setString(str);
 	update();
+}
+
+void Button::setPosition(sf::Vector2f pos)
+{
+    Control::setPosition(pos);
+    setMouseCatchOffset(pos);
+}
+
+void Button::setPosition(float x, float y)
+{
+    setPosition(sf::Vector2f(x, y));
+}
+
+void Button::setSize(sf::Vector2f size)
+{
+    Control::setSize(size);
+    setMouseCatchSize(size);
+}
+
+void Button::setSize(float x, float y)
+{
+    setSize(sf::Vector2f(x, y));
 }
 
 void Button::update()
@@ -37,6 +66,28 @@ void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	states.transform = getTransform();
 	target.draw( base, states );
 	target.draw( text, states );
+}
+
+void Button::onMouseEnter()
+{
+    fadeOutAnim.stop();
+    fadeInAnim.play();
+}
+
+void Button::onMouseLeave()
+{
+    fadeInAnim.stop();
+    fadeOutAnim.play();
+}
+
+void Button::onMouseClick()
+{
+    base.setFillColor(sf::Color(0xFF, 0x88, 0));
+}
+
+void Button::onMouseUp()
+{
+    base.setFillColor(sf::Color::White);
 }
 
 }
