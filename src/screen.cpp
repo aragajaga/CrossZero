@@ -61,13 +61,14 @@ int TitleScreen::Run(sf::RenderWindow& app)
         10
     );
 
-    menu.update(app);
+    // menu.update(app);
 
     for (auto& anim : animations)
             anim->onTick();
 
     app.draw(header);
     app.draw(version);
+    app.draw(menu);
 
     return 0;
 }

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(CrossZero)
 
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++17")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++17 -pthread")
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories("./")
 include_directories("${CMAKE_SOURCE_DIR}/src")

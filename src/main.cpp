@@ -34,19 +34,14 @@ int main(int argc, char * argv[]) {
     app.setFramerateLimit(60);
     app.setVerticalSyncEnabled(false);
 
-
     animations = std::vector<Animation *> ();
-
-	std::vector<UI::Screen::Base*> screens;
-	int screen = 0;
-
-	mouseSubject = MouseEventSubject();
+    mouseSubject = MouseEventSubject();
     animationClock = sf::Clock();
     
     UI::Screen::Background background;
     UI::Screen::TitleScreen titleScreen;
-	// UI::Screen::FPSCounter fps_counter;
-	// UI::Screen::Settings settings_menu;
+    // UI::Screen::FPSCounter fps_counter;
+    // UI::Screen::Settings settings_menu;
 
     while (app.isOpen()) {
         sf::Event event;
