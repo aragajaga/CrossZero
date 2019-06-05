@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(CrossZero)
 
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++14")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++17")
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories("./")
 include_directories("${CMAKE_SOURCE_DIR}/src")
@@ -12,12 +12,12 @@ set(SRC_FILES
   "src/control.cpp"
   "src/button.cpp"
   "src/edit.cpp"
-# "src/raster_rounded_rectangle.cpp"
   "src/rounded_rectangle.cpp"
   "src/screen.cpp"
   "src/settings_screen.cpp"
   "src/main_menu.cpp"
   "src/main.cpp"
+  "src/animation.cpp"
 )
 
 # Name output binary executable file
@@ -33,3 +33,5 @@ if(SFML_FOUND)
 	include_directories(${SFML_INCLUDE_DIR})
 	target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
 endif()
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:DEBUG>")

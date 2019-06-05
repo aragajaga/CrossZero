@@ -6,7 +6,9 @@ namespace Controls {
 
 Button::Button()
 : normalColor(sf::Color::White),
-  hoverColor(sf::Color(0x88, 0xFF, 0))
+  hoverColor(sf::Color(0x88, 0xFF, 0)),
+  fadeInAnim(&base, sf::seconds(.2f)),
+  fadeOutAnim(&base, sf::seconds(.4f))
 {
 	base.setCornersRadius(2.f);
 	base.setCornerPointCount(4);
@@ -15,6 +17,10 @@ Button::Button()
 	text.setFont(::SharedFont::getInstance().font);
 	text.setFillColor(sf::Color::Red);
 	update();
+    
+    #ifdef DEBUG
+    std::cout << "[Button] Constructed" << std::endl;
+    #endif
 }
 
 void Button::setFillColor(sf::Color color)
@@ -30,7 +36,7 @@ void Button::setString(const sf::String& str)
 
 void Button::setPosition(sf::Vector2f pos)
 {
-    Control::setPosition(pos);
+    base.setPosition(pos);
     setMouseCatchOffset(pos);
 }
 
@@ -41,7 +47,7 @@ void Button::setPosition(float x, float y)
 
 void Button::setSize(sf::Vector2f size)
 {
-    Control::setSize(size);
+    base.setSize(size);
     setMouseCatchSize(size);
 }
 
@@ -52,6 +58,8 @@ void Button::setSize(float x, float y)
 
 void Button::update()
 {
+    sf::Vector2f m_size = base.getSize();
+    
 	base.setSize( m_size );
 	base.setCornersRadius( m_size.y*2/50.f );
 
@@ -63,6 +71,10 @@ void Button::update()
 
 void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
+    #ifdef DEBUG
+    std::cout << "[Button] Draw" << std::endl;
+    #endif
+    
 	states.transform = getTransform();
 	target.draw( base, states );
 	target.draw( text, states );
@@ -71,13 +83,13 @@ void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const
 void Button::onMouseEnter()
 {
     fadeOutAnim.stop();
-    fadeInAnim.play();
+    fadeInAnim.play(hoverColor);
 }
 
 void Button::onMouseLeave()
 {
     fadeInAnim.stop();
-    fadeOutAnim.play();
+    fadeOutAnim.play(normalColor);
 }
 
 void Button::onMouseClick()

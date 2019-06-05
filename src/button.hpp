@@ -8,7 +8,7 @@
 namespace UI {
 namespace Controls {
 
-class Button : public MouseEventObserver, public Control {
+class Button : public sf::RectangleShape, public MouseEventObserver {
 public:
 	Button();
 	void setString(const sf::String& str);
@@ -24,8 +24,8 @@ public:
     void onMouseClick();
     void onMouseUp();
     
-    Animation fadeInAnim;
-    Animation fadeOutAnim;
+    FadeAnimation fadeInAnim;
+    FadeAnimation fadeOutAnim;
     
     sf::Color hoverColor;
     sf::Color normalColor;

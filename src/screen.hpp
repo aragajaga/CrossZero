@@ -4,6 +4,7 @@
 #include "simple_particles.hpp"
 #include <SFML/Graphics.hpp>
 #include "main_menu.hpp"
+#include "animation.hpp"
 
 namespace UI {
 

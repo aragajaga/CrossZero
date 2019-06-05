@@ -8,7 +8,13 @@
 MouseEventSubject mouseSubject;
 sf::Clock animationClock;
 
+std::vector<Animation *> animations;
+
 int main(int argc, char * argv[]) {
+    #ifdef DEBUG
+    std::cout << "This is a debug build" << std::endl;
+    #endif
+    
     /* server::ServerConnectionMng mng;
     mng.listen();
 
@@ -29,6 +35,8 @@ int main(int argc, char * argv[]) {
     app.setVerticalSyncEnabled(false);
 
 
+    animations = std::vector<Animation *> ();
+
 	std::vector<UI::Screen::Base*> screens;
 	int screen = 0;
 
@@ -37,14 +45,8 @@ int main(int argc, char * argv[]) {
     
     UI::Screen::Background background;
     UI::Screen::TitleScreen titleScreen;
-	UI::Screen::FPSCounter fps_counter;
-	UI::Screen::Settings settings_menu;
-	screens = {
-        &background,
-        &titleScreen,
-        &settings_menu,
-        &fps_counter
-	};
+	// UI::Screen::FPSCounter fps_counter;
+	// UI::Screen::Settings settings_menu;
 
     while (app.isOpen()) {
         sf::Event event;
@@ -65,10 +67,9 @@ int main(int argc, char * argv[]) {
                 mouseSubject.clickRelease(event);
         }
 
-        screen = screens[screen]->Run(app);
-        screens[1]->Run(app);
-        // screens[2]->Run(app);
-        screens[3]->Run(app);
+        background.Run(app);
+        titleScreen.Run(app);
+        
         app.display();
     }
 
