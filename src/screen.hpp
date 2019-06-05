@@ -22,7 +22,7 @@ public:
     Background();
     int Run(sf::RenderWindow& app);
 private:
-	::SimpleParticles parts;
+    ::SimpleParticles parts;
 };
 
 //------------------------------------------------------------------------------

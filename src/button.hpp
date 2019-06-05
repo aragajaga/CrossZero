@@ -10,9 +10,9 @@ namespace Controls {
 
 class Button : public sf::RectangleShape, public MouseEventObserver {
 public:
-	Button();
-	void setString(const sf::String& str);
-	void update();
+    Button();
+    void setString(const sf::String& str);
+    void update();
     void setPosition(float x, float y);
     void setPosition(sf::Vector2f pos);
     void setSize(float x, float y);
@@ -30,10 +30,10 @@ public:
     sf::Color hoverColor;
     sf::Color normalColor;
 private:
-	void draw(sf::RenderTarget &target, sf::RenderStates states) const;
-	std::wstring label;
-	sf::RoundedRectangleShape base;
-	sf::Text text;
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+    std::wstring label;
+    sf::RoundedRectangleShape base;
+    sf::Text text;
 };
 
 }

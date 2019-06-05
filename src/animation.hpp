@@ -29,23 +29,23 @@ public:
         #ifdef DEBUG
         std::cout << "[FadeAnimation] Start playing" << std::endl;
         #endif
-        
+
         if (m_playing && !m_doInterrupt)
             return;
-        
+
         m_playing = true;
         m_startTime = animationClock.getElapsedTime();
     }
-    
+
     bool isPlaying() const {
         return m_playing;
     }
-    
+
     sf::Time getElapsed() const
     {
         return animationClock.getElapsedTime() - m_startTime;
     }
-    
+
     void stop()
     {
         m_startTime = sf::Time::Zero;
@@ -54,7 +54,7 @@ public:
 private:
     bool m_doInterrupt;
     bool m_playing;
-    
+
     sf::Time m_startTime;
 };
 
@@ -64,15 +64,15 @@ public:
     : m_target(target),
       m_duration(duration)
     {}
-    
+
     void play(const sf::Color& destColor)
     {
         Animation::play();
-        
+
         m_startColor = m_target->getFillColor();
         m_destColor = destColor;
     }
-    
+
     void onTick()
     {
         if (isPlaying())
@@ -80,9 +80,9 @@ public:
             #ifdef DEBUG
             std::cout << "[FadeAnimation] Tick" << std::endl;
             #endif
-            
+
             float delta = getElapsed() / m_duration;
-            
+
             if (delta > 1.f)
                 stop();
             // BUG: Rough destination number

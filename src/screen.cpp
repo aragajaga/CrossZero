@@ -9,22 +9,22 @@ namespace Screen {
 
 Background::Background()
 : parts(SimpleParticlesBuilder::create()
-		.add("res/xo.png", sf::IntRect(0, 0, 24, 24), 10)
-		.add("res/xo.png", sf::IntRect(24, 0, 24, 24), 10)
-		.setSpeed(0.5f)
-		.setWindowParams(800, 600)
-		.build())
+        .add("res/xo.png", sf::IntRect(0, 0, 24, 24), 10)
+        .add("res/xo.png", sf::IntRect(24, 0, 24, 24), 10)
+        .setSpeed(0.5f)
+        .setWindowParams(800, 600)
+        .build())
 {}
 
 int Background::Run(sf::RenderWindow& app)
 {
-	parts.setWindowParams(app.getSize().x, app.getSize().y);
+    parts.setWindowParams(app.getSize().x, app.getSize().y);
     parts.update(box);
 
     app.clear();
-	for (const auto& it: parts.getSprites())
+    for (const auto& it: parts.getSprites())
         app.draw(it);
-	return 0;
+    return 0;
 }
 
 //------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ TitleScreen::TitleScreen()
     version.setFillColor(sf::Color::White);
     version.setOutlineColor(sf::Color::Black);
     version.setOutlineThickness(1.f);
-    
+
     #ifdef DEBUG
     std::cout << "[TitleScreen] Constructed" << std::endl;
     #endif
