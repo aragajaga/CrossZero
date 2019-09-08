@@ -4,16 +4,80 @@
 #include "shared_font.hpp"
 #include "server/server.hpp"
 #include "mouse_event.hpp"
+#include <cstring>
 
 MouseEventSubject mouseSubject;
 sf::Clock animationClock;
 
 std::vector<Animation *> animations;
 
+#define CHIP_O false;
+#define CHIP_X true;
+
+struct ClientPost {
+    uint8_t coord;
+};
+
+void host()
+{
+    std::cout << "Starting server" << std::endl;
+    
+    sf::TcpListener listener;
+    if (listener.listen(8989) != sf::Socket::Done)
+        return;
+
+    sf::TcpSocket client;
+    if (listener.accept(client) != sf::Socket::Done)
+        return;
+    std::cout << "Client connected" << std::endl;
+    
+    bool assignedChip = CHIP_X;
+    if (client.send(&assignedChip, sizeof(bool)) != sf::Socket::Done)
+        return;
+    std::cout << "Assigned chip to client: " << (assignedChip ? 'X' : 'O') << std::endl;
+    
+    struct ClientPost cli_packet;
+    size_t received;
+    client.receive(&cli_packet, sizeof(struct ClientPost), received);
+    std::cout << "Player did move at cell: " << static_cast<int> (cli_packet.coord) << std::endl;
+}
+
 int main(int argc, char * argv[]) {
+    
     #ifdef DEBUG
     std::cout << "This is a debug build" << std::endl;
     #endif
+    
+    bool host_arg = false;
+    
+    for (size_t argi = 1; argi < argc; argi++)
+    {
+        if (std::strcmp(argv[argi], "--host") == 0) host_arg = true;
+    }
+    
+    if (host_arg)
+    {
+        host();
+        exit(0);
+    }
+    
+    sf::TcpSocket client;
+    client.connect("127.0.0.1", 8989);
+    std::cout << "Connected to server" << std::endl;
+    
+    bool assignedChip;
+    size_t received;
+    if (client.receive(&assignedChip, sizeof(bool), received) != sf::Socket::Done)
+    {
+        exit(1);
+    }
+    std::cout << "Assigned chip: " << (assignedChip ? 'X' : 'O') << std::endl;
+    
+    struct ClientPost cli_post;
+    cli_post.coord = 4;
+    
+    if (client.send(&cli_post, sizeof(struct ClientPost)) != sf::Socket::Done)
+        exit(1);
     
     /* server::ServerConnectionMng mng;
     mng.listen();
