@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "main_menu.hpp"
 #include "animation.hpp"
+#include "field.hpp"
 
 namespace UI {
 
@@ -35,6 +36,16 @@ private:
     sf::Text header;
     sf::Text version;
     ::MainMenu menu;
+};
+
+//------------------------------------------------------------------------------
+
+class GameScreen : public Base {
+public:
+    GameScreen();
+    int Run(sf::RenderWindow& app);
+private:
+    Field field;
 };
 
 //------------------------------------------------------------------------------

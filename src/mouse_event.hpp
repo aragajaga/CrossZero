@@ -1,6 +1,9 @@
 #ifndef MOUSE_EVENT_HPP
 #define MOUSE_EVENT_HPP
 
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+
 class MouseEventObserver {
 friend class MouseEventSubject;
 public:

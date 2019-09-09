@@ -1,11 +1,33 @@
 #include "main_menu.hpp"
 #include "mouse_event.hpp"
+#include "screen.hpp"
 
 extern MouseEventSubject mouseSubject;
 
+extern UI::Screen::Base *topScreen;
+extern UI::Screen::GameScreen *gameScreen;
+
+class PlayButton : public UI::Controls::Button {
+public:
+    PlayButton()
+    {
+        
+    }
+    
+    friend UI::Controls::Button;
+    
+    void onMouseClick()
+    {
+        UI::Controls::Button::onMouseClick();
+        topScreen = gameScreen;
+    }
+};
+
+
+
 MainMenu::MainMenu()
 {    
-    playButton = new UI::Controls::Button();
+    playButton = new PlayButton();
     playButton->setInitialSize(sf::Vector2f(200.f, 50.f));
     playButton->setOrigin(100.f, 25.f);
     playButton->setPosition(10.f, 10.f);

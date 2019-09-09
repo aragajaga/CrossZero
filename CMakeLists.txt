@@ -18,6 +18,7 @@ set(SRC_FILES
   "src/main_menu.cpp"
   "src/main.cpp"
   "src/animation.cpp"
+  "src/field.cpp"
 )
 
 # Name output binary executable file

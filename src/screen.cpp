@@ -75,6 +75,21 @@ int TitleScreen::Run(sf::RenderWindow& app)
 
 //------------------------------------------------------------------------------
 
+GameScreen::GameScreen()
+: field()
+{
+
+}
+
+int GameScreen::Run(sf::RenderWindow& app)
+{
+    app.draw(field);
+    
+    return 0;
+}
+
+//------------------------------------------------------------------------------
+
 FPSCounter::FPSCounter()
 {
     fps.setFont(SharedFont::getInstance().font);

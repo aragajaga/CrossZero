@@ -10,6 +10,8 @@ MouseEventSubject mouseSubject;
 sf::Clock animationClock;
 
 sf::RenderWindow *app;
+UI::Screen::Base *topScreen;
+UI::Screen::GameScreen *gameScreen;
 std::vector<Animation *> animations;
 
 #define CHIP_O false;
@@ -113,8 +115,12 @@ int main(int argc, char * argv[]) {
     
     UI::Screen::Background background;
     UI::Screen::TitleScreen titleScreen;
+    gameScreen = new UI::Screen::GameScreen();
+    
     // UI::Screen::FPSCounter fps_counter;
     // UI::Screen::Settings settings_menu;
+
+    topScreen = &titleScreen;
 
     while (app->isOpen()) {
         sf::Event event;
@@ -136,7 +142,7 @@ int main(int argc, char * argv[]) {
         }
 
         background.Run(*app);
-        titleScreen.Run(*app);
+        topScreen->Run(*app);
         
         app->display();
     }
