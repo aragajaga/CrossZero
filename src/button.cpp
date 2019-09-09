@@ -1,5 +1,8 @@
 #include "shared_font.hpp"
 #include "button.hpp"
+#include <cmath>
+
+extern sf::RenderWindow *app;
 
 namespace UI {
 namespace Controls {
@@ -37,12 +40,20 @@ void Button::setString(const sf::String& str)
 void Button::setPosition(sf::Vector2f pos)
 {
     base.setPosition(pos);
+    text.setPosition(pos);
     setMouseCatchOffset(pos);
 }
 
 void Button::setPosition(float x, float y)
 {
     setPosition(sf::Vector2f(x, y));
+    text.setPosition(sf::Vector2f(x, y));
+}
+
+void Button::setInitialSize(sf::Vector2f size)
+{
+    initialSize = size;
+    setSize(size);
 }
 
 void Button::setSize(sf::Vector2f size)
@@ -58,15 +69,23 @@ void Button::setSize(float x, float y)
 
 void Button::update()
 {
+    auto screen = app->getSize();
+    
     sf::Vector2f m_size = base.getSize();
-
-    base.setSize( m_size );
+    // base.scale(sf::Vector2f(screen.y/360.f, screen.y/360.f));
+    
+    // base.setSize( m_size );
     base.setCornersRadius( m_size.y*2/50.f );
 
     sf::FloatRect textBounds = text.getLocalBounds();
     float textCharacterSize = m_size.y*0.48f;
     text.setCharacterSize( textCharacterSize );
-    text.setPosition(m_size.x/2.f - textBounds.width/2.f, m_size.y/2.f - (textCharacterSize/2.f + m_size.y*3/50) );
+    
+    text.move(std::round((m_size.x-textBounds.width)/2.f), (m_size.y-textCharacterSize)/2.f - m_size.y*3/50);
+    
+    this->setSize(initialSize * (screen.y/360.f));
+    
+    std::cout << screen.y/360.f << std::endl;
 }
 
 void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const

@@ -17,6 +17,7 @@ public:
     void setPosition(sf::Vector2f pos);
     void setSize(float x, float y);
     void setSize(sf::Vector2f size);
+    void setInitialSize(sf::Vector2f size);
     void setFillColor(sf::Color color);
     
     void onMouseEnter();
@@ -34,6 +35,8 @@ private:
     std::wstring label;
     sf::RoundedRectangleShape base;
     sf::Text text;
+    
+    sf::Vector2f initialSize;
 };
 
 }

@@ -5,26 +5,29 @@ extern MouseEventSubject mouseSubject;
 
 MainMenu::MainMenu()
 {    
-    UI::Controls::Button *playButton = new UI::Controls::Button();
-    playButton->setSize(sf::Vector2f(200.f, 50.f));
+    playButton = new UI::Controls::Button();
+    playButton->setInitialSize(sf::Vector2f(200.f, 50.f));
+    playButton->setOrigin(100.f, 25.f);
     playButton->setPosition(10.f, 10.f);
     playButton->setString("Play");
     mouseSubject.subscribe(playButton);
-    buttons.push_back(playButton);
+    // buttons.push_back(playButton);
     
-    UI::Controls::Button *leaderboardButton = new UI::Controls::Button();
-    leaderboardButton->setSize(sf::Vector2f(200.f, 50.f));
+    leaderboardButton = new UI::Controls::Button();
+    leaderboardButton->setInitialSize(sf::Vector2f(200.f, 50.f));
+    leaderboardButton->setOrigin(100.f, 25.f);
     leaderboardButton->setPosition(10.f, 70.f);
     leaderboardButton->setString("Leaderboard");
     mouseSubject.subscribe(leaderboardButton);
-    buttons.push_back(leaderboardButton);
+    // buttons.push_back(leaderboardButton);
     
-    UI::Controls::Button *settingsButton = new UI::Controls::Button();
-    settingsButton->setSize(sf::Vector2f(200.f, 50.f));
+    settingsButton = new UI::Controls::Button();
+    settingsButton->setInitialSize(sf::Vector2f(200.f, 50.f));
+    settingsButton->setOrigin(100.f, 25.f);
     settingsButton->setPosition(sf::Vector2f(10.f, 130.f));
     settingsButton->setString("Settings");
     mouseSubject.subscribe(settingsButton);
-    buttons.push_back(settingsButton);
+    // buttons.push_back(settingsButton);
     
     #ifdef DEBUG
     std::cout << "[MainMenu] Constructed" << std::endl;
@@ -57,12 +60,27 @@ void MainMenu::update(sf::RenderWindow& app)
         ++i;
     }
     */
+    
+    
+    auto screen = app.getSize();
+    playButton          ->setPosition(screen.x / 2, screen.y / 3);
+    playButton          ->update();
+    
+    leaderboardButton   ->setPosition(screen.x / 2, screen.y / 2);
+    leaderboardButton   ->update();
+    
+    settingsButton      ->setPosition(screen.x / 2, screen.y / 3 * 2);
+    settingsButton      ->update();
 }
 
 void MainMenu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     states.transform = getTransform();
-    for ( auto& num : buttons ) {
+    target.draw(*playButton, states);
+    target.draw(*leaderboardButton, states);
+    target.draw(*settingsButton, states);
+    
+    /* for ( auto& num : buttons ) {
         target.draw(*num, states);
-    }
+    } */
 }

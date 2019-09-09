@@ -9,6 +9,7 @@
 MouseEventSubject mouseSubject;
 sf::Clock animationClock;
 
+sf::RenderWindow *app;
 std::vector<Animation *> animations;
 
 #define CHIP_O false;
@@ -62,22 +63,30 @@ int main(int argc, char * argv[]) {
     }
     
     sf::TcpSocket client;
-    client.connect("127.0.0.1", 8989);
-    std::cout << "Connected to server" << std::endl;
+    sf::Socket::Status status = client.connect("127.0.0.1", 8989);
+    std::cout << "Connecting to server..." << std::endl;
     
-    bool assignedChip;
-    size_t received;
-    if (client.receive(&assignedChip, sizeof(bool), received) != sf::Socket::Done)
-    {
-        exit(1);
+    if (status == sf::Socket::Done) {        
+        std::cout << "Connected!" << std::endl;
+        
+        bool assignedChip;
+        size_t received;
+        if (client.receive(&assignedChip, sizeof(bool), received) != sf::Socket::Done)
+        {
+            exit(1);
+        }
+        std::cout << "Assigned chip: " << (assignedChip ? 'X' : 'O') << std::endl;
+        
+        struct ClientPost cli_post;
+        cli_post.coord = 4;
+        
+        if (client.send(&cli_post, sizeof(struct ClientPost)) != sf::Socket::Done)
+            exit(1);
+    } else {
+        std::cout << "Cannot connect to server. Offline mode." << std::endl;
     }
-    std::cout << "Assigned chip: " << (assignedChip ? 'X' : 'O') << std::endl;
     
-    struct ClientPost cli_post;
-    cli_post.coord = 4;
     
-    if (client.send(&cli_post, sizeof(struct ClientPost)) != sf::Socket::Done)
-        exit(1);
     
     /* server::ServerConnectionMng mng;
     mng.listen();
@@ -92,11 +101,11 @@ int main(int argc, char * argv[]) {
     sf::ContextSettings settings;
     //settings.antialiasingLevel = 8;
 
-    sf::RenderWindow app(sf::VideoMode(640, 360), "CrossZero", sf::Style::Default, settings);
+    app = new sf::RenderWindow(sf::VideoMode(640, 360), "CrossZero", sf::Style::Default, settings);
 
-    sf::View view(app.getDefaultView());
-    app.setFramerateLimit(60);
-    app.setVerticalSyncEnabled(false);
+    sf::View view(app->getDefaultView());
+    app->setFramerateLimit(60);
+    app->setVerticalSyncEnabled(false);
 
     animations = std::vector<Animation *> ();
     mouseSubject = MouseEventSubject();
@@ -107,14 +116,14 @@ int main(int argc, char * argv[]) {
     // UI::Screen::FPSCounter fps_counter;
     // UI::Screen::Settings settings_menu;
 
-    while (app.isOpen()) {
+    while (app->isOpen()) {
         sf::Event event;
-        while (app.pollEvent(event)) {
+        while (app->pollEvent(event)) {
             if (event.type == sf::Event::Closed)
-                app.close();
+                app->close();
 
             if (event.type == sf::Event::Resized)
-                app.setView(view = sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(app.getSize().x), static_cast<float>(app.getSize().y))));
+                app->setView(view = sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(app->getSize().x), static_cast<float>(app->getSize().y))));
             
             if (event.type == sf::Event::MouseMoved)
                 mouseSubject.mouseMove(event);
@@ -126,10 +135,10 @@ int main(int argc, char * argv[]) {
                 mouseSubject.clickRelease(event);
         }
 
-        background.Run(app);
-        titleScreen.Run(app);
+        background.Run(*app);
+        titleScreen.Run(*app);
         
-        app.display();
+        app->display();
     }
 
     return EXIT_SUCCESS;
