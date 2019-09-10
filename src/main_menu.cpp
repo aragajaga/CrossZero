@@ -1,11 +1,14 @@
 #include "main_menu.hpp"
 #include "mouse_event.hpp"
 #include "screen.hpp"
+#include "settings_screen.hpp"
 
 extern MouseEventSubject mouseSubject;
 
 extern UI::Screen::Base *topScreen;
 extern UI::Screen::GameScreen *gameScreen;
+extern UI::Screen::Settings *settingsScreen;
+extern UI::Screen::ScreenManager *screenmgr;
 
 class PlayButton : public UI::Controls::Button {
 public:
@@ -16,12 +19,29 @@ public:
     
     friend UI::Controls::Button;
     
+    void onMouseUp()
+    {
+        UI::Controls::Button::onMouseUp();
+        screenmgr->ChangeTo(gameScreen, SCREEN_LAYER_TOP);
+    }
+};
+
+class SettingsButton : public UI::Controls::Button {
+public:
+    SettingsButton()
+    {
+        
+    }
+    
+    friend UI::Controls::Button;
+    
     void onMouseClick()
     {
         UI::Controls::Button::onMouseClick();
-        topScreen = gameScreen;
+        screenmgr->ChangeTo(settingsScreen, SCREEN_LAYER_TOP);
     }
 };
+
 
 
 
@@ -43,7 +63,7 @@ MainMenu::MainMenu()
     mouseSubject.subscribe(leaderboardButton);
     // buttons.push_back(leaderboardButton);
     
-    settingsButton = new UI::Controls::Button();
+    settingsButton = new SettingsButton();
     settingsButton->setInitialSize(sf::Vector2f(200.f, 50.f));
     settingsButton->setOrigin(100.f, 25.f);
     settingsButton->setPosition(sf::Vector2f(10.f, 130.f));

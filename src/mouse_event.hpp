@@ -110,6 +110,12 @@ public:
             }
         }
     }
+    
+    void erase()
+    {
+        m_observers.clear();
+    }
+    
 private:
     static bool isIntersects(float x, float y, float cx1, float cy1, float cx2,
             float cy2)

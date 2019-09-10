@@ -10,9 +10,13 @@ MouseEventSubject mouseSubject;
 sf::Clock animationClock;
 
 sf::RenderWindow *app;
+UI::Screen::ScreenManager *screenmgr;
 UI::Screen::Base *topScreen;
 UI::Screen::GameScreen *gameScreen;
+UI::Screen::Settings *settingsScreen;
 std::vector<Animation *> animations;
+
+sf::Texture *mark_texture;
 
 #define CHIP_O false;
 #define CHIP_X true;
@@ -88,8 +92,6 @@ int main(int argc, char * argv[]) {
         std::cout << "Cannot connect to server. Offline mode." << std::endl;
     }
     
-    
-    
     /* server::ServerConnectionMng mng;
     mng.listen();
 
@@ -99,6 +101,14 @@ int main(int argc, char * argv[]) {
     */
     // Загрузка ресов
     SharedFont::getInstance().font.loadFromFile("res/CZ.otf");
+    
+    sf::Image mark_image;
+    mark_image.loadFromFile("res/mark.bmp");
+    mark_image.createMaskFromColor(sf::Color::Magenta);
+    
+    mark_texture = new sf::Texture();
+    mark_texture->loadFromImage(mark_image);
+    mark_texture->setSmooth(true);
 
     sf::ContextSettings settings;
     //settings.antialiasingLevel = 8;
@@ -115,12 +125,19 @@ int main(int argc, char * argv[]) {
     
     UI::Screen::Background background;
     UI::Screen::TitleScreen titleScreen;
+    UI::Screen::LoadingScreen loadingScreen;
+    
     gameScreen = new UI::Screen::GameScreen();
+    settingsScreen = new UI::Screen::Settings();
     
     // UI::Screen::FPSCounter fps_counter;
     // UI::Screen::Settings settings_menu;
 
-    topScreen = &titleScreen;
+    // topScreen = &loadingScreen;
+    
+    screenmgr = new UI::Screen::ScreenManager();
+    screenmgr->ChangeTo(&background, SCREEN_LAYER_BACKGROUND);
+    screenmgr->ChangeTo(&loadingScreen, SCREEN_LAYER_TOP);
 
     while (app->isOpen()) {
         sf::Event event;
@@ -141,8 +158,7 @@ int main(int argc, char * argv[]) {
                 mouseSubject.clickRelease(event);
         }
 
-        background.Run(*app);
-        topScreen->Run(*app);
+        screenmgr->Tick(*app);
         
         app->display();
     }

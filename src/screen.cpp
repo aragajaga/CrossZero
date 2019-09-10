@@ -3,9 +3,19 @@
 #include "shared_font.hpp"
 #include "animation.hpp"
 
+extern sf::RenderWindow* app;
+extern MouseEventSubject mouseSubject;
+
 namespace UI {
 
 namespace Screen {
+
+void Base::Hide()
+{
+    mouseSubject.erase();
+}
+
+//------------------------------------------------------------------------------
 
 Background::Background()
 : parts(SimpleParticlesBuilder::create()
@@ -36,12 +46,14 @@ TitleScreen::TitleScreen()
     header.setString("CrossZero");
     header.setFillColor(sf::Color::White);
 
+    #ifdef DEBUG
     version.setFont(SharedFont::getInstance().font);
-    version.setString("Some text in top-right corner.");
+    version.setString("Debug build");
     version.setCharacterSize(24);
     version.setFillColor(sf::Color::White);
     version.setOutlineColor(sf::Color::Black);
     version.setOutlineThickness(1.f);
+    #endif
 
     #ifdef DEBUG
     std::cout << "[TitleScreen] Constructed" << std::endl;
@@ -67,7 +79,9 @@ int TitleScreen::Run(sf::RenderWindow& app)
             anim->onTick();
 
     app.draw(header);
+    #ifdef DEBUG
     app.draw(version);
+    #endif
     app.draw(menu);
 
     return 0;
@@ -85,6 +99,35 @@ int GameScreen::Run(sf::RenderWindow& app)
 {
     app.draw(field);
     
+    return 0;
+}
+
+//------------------------------------------------------------------------------
+
+LoadingScreen::LoadingScreen()
+{
+    auto screen = app->getSize();
+    
+    spin.setSize(sf::Vector2f(50.f, 50.f));
+    spin.setOrigin(sf::Vector2f(25.f, 25.f));
+    spin.setPosition(sf::Vector2f(screen.x/2.f, screen.y/2.f));
+    
+    text.setFont(SharedFont::getInstance().font);
+    text.setString("Loading...");
+    text.setCharacterSize(24);
+    text.setOutlineColor(sf::Color::Black);
+    text.setOutlineThickness(1.f);
+    
+    text.setPosition(sf::Vector2f((screen.x - text.getLocalBounds().width)/2.f,
+        (screen.y - text.getLocalBounds().height)/2.f + 75.f));
+}
+
+int LoadingScreen::Run(sf::RenderWindow& app)
+{
+    spin.rotate(5.f);
+    
+    app.draw(spin);
+    app.draw(text);
     return 0;
 }
 
