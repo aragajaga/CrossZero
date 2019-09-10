@@ -1,6 +1,9 @@
 #ifndef MOUSE_EVENT_HPP
 #define MOUSE_EVENT_HPP
 
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+
 class MouseEventObserver {
 friend class MouseEventSubject;
 public:
@@ -107,6 +110,12 @@ public:
             }
         }
     }
+    
+    void erase()
+    {
+        m_observers.clear();
+    }
+    
 private:
     static bool isIntersects(float x, float y, float cx1, float cy1, float cx2,
             float cy2)

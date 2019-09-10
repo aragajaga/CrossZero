@@ -4,11 +4,94 @@
 #include "shared_font.hpp"
 #include "server/server.hpp"
 #include "mouse_event.hpp"
+#include <cstring>
 
 MouseEventSubject mouseSubject;
 sf::Clock animationClock;
 
+sf::RenderWindow *app;
+UI::Screen::ScreenManager *screenmgr;
+UI::Screen::Base *topScreen;
+UI::Screen::GameScreen *gameScreen;
+UI::Screen::Settings *settingsScreen;
+std::vector<Animation *> animations;
+
+sf::Texture *mark_texture;
+
+#define CHIP_O false;
+#define CHIP_X true;
+
+struct ClientPost {
+    uint8_t coord;
+};
+
+void host()
+{
+    std::cout << "Starting server" << std::endl;
+    
+    sf::TcpListener listener;
+    if (listener.listen(8989) != sf::Socket::Done)
+        return;
+
+    sf::TcpSocket client;
+    if (listener.accept(client) != sf::Socket::Done)
+        return;
+    std::cout << "Client connected" << std::endl;
+    
+    bool assignedChip = CHIP_X;
+    if (client.send(&assignedChip, sizeof(bool)) != sf::Socket::Done)
+        return;
+    std::cout << "Assigned chip to client: " << (assignedChip ? 'X' : 'O') << std::endl;
+    
+    struct ClientPost cli_packet;
+    size_t received;
+    client.receive(&cli_packet, sizeof(struct ClientPost), received);
+    std::cout << "Player did move at cell: " << static_cast<int> (cli_packet.coord) << std::endl;
+}
+
 int main(int argc, char * argv[]) {
+    
+    #ifdef DEBUG
+    std::cout << "This is a debug build" << std::endl;
+    #endif
+    
+    bool host_arg = false;
+    
+    for (size_t argi = 1; argi < argc; argi++)
+    {
+        if (std::strcmp(argv[argi], "--host") == 0) host_arg = true;
+    }
+    
+    if (host_arg)
+    {
+        host();
+        exit(0);
+    }
+    
+    sf::TcpSocket client;
+    sf::Socket::Status status = client.connect("127.0.0.1", 8989);
+    std::cout << "Connecting to server..." << std::endl;
+    
+    if (status == sf::Socket::Done) {        
+        std::cout << "Connected!" << std::endl;
+        
+        bool assignedChip;
+        size_t received;
+        if (client.receive(&assignedChip, sizeof(bool), received) != sf::Socket::Done)
+        {
+            exit(1);
+        }
+        std::cout << "Assigned chip: " << (assignedChip ? 'X' : 'O') << std::endl;
+        
+        struct ClientPost cli_post;
+        cli_post.coord = 4;
+        
+        if (client.send(&cli_post, sizeof(struct ClientPost)) != sf::Socket::Done)
+            exit(1);
+    } else {
+        std::cout << "Cannot connect to server. Offline mode." << std::endl;
+    }
+    
     /* server::ServerConnectionMng mng;
     mng.listen();
 
@@ -18,42 +101,52 @@ int main(int argc, char * argv[]) {
     */
     // Загрузка ресов
     SharedFont::getInstance().font.loadFromFile("res/CZ.otf");
+    
+    sf::Image mark_image;
+    mark_image.loadFromFile("res/mark.bmp");
+    mark_image.createMaskFromColor(sf::Color::Magenta);
+    
+    mark_texture = new sf::Texture();
+    mark_texture->loadFromImage(mark_image);
+    mark_texture->setSmooth(true);
 
     sf::ContextSettings settings;
     //settings.antialiasingLevel = 8;
 
-    sf::RenderWindow app(sf::VideoMode(640, 360), "CrossZero", sf::Style::Default, settings);
+    app = new sf::RenderWindow(sf::VideoMode(640, 360), "CrossZero", sf::Style::Default, settings);
 
-    sf::View view(app.getDefaultView());
-    app.setFramerateLimit(60);
-    app.setVerticalSyncEnabled(false);
+    sf::View view(app->getDefaultView());
+    app->setFramerateLimit(60);
+    app->setVerticalSyncEnabled(false);
 
-
-	std::vector<UI::Screen::Base*> screens;
-	int screen = 0;
-
-	mouseSubject = MouseEventSubject();
+    animations = std::vector<Animation *> ();
+    mouseSubject = MouseEventSubject();
     animationClock = sf::Clock();
     
     UI::Screen::Background background;
     UI::Screen::TitleScreen titleScreen;
-	UI::Screen::FPSCounter fps_counter;
-	UI::Screen::Settings settings_menu;
-	screens = {
-        &background,
-        &titleScreen,
-        &settings_menu,
-        &fps_counter
-	};
+    UI::Screen::LoadingScreen loadingScreen;
+    
+    gameScreen = new UI::Screen::GameScreen();
+    settingsScreen = new UI::Screen::Settings();
+    
+    // UI::Screen::FPSCounter fps_counter;
+    // UI::Screen::Settings settings_menu;
 
-    while (app.isOpen()) {
+    // topScreen = &loadingScreen;
+    
+    screenmgr = new UI::Screen::ScreenManager();
+    screenmgr->ChangeTo(&background, SCREEN_LAYER_BACKGROUND);
+    screenmgr->ChangeTo(&loadingScreen, SCREEN_LAYER_TOP);
+
+    while (app->isOpen()) {
         sf::Event event;
-        while (app.pollEvent(event)) {
+        while (app->pollEvent(event)) {
             if (event.type == sf::Event::Closed)
-                app.close();
+                app->close();
 
             if (event.type == sf::Event::Resized)
-                app.setView(view = sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(app.getSize().x), static_cast<float>(app.getSize().y))));
+                app->setView(view = sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(app->getSize().x), static_cast<float>(app->getSize().y))));
             
             if (event.type == sf::Event::MouseMoved)
                 mouseSubject.mouseMove(event);
@@ -65,11 +158,9 @@ int main(int argc, char * argv[]) {
                 mouseSubject.clickRelease(event);
         }
 
-        screen = screens[screen]->Run(app);
-        screens[1]->Run(app);
-        // screens[2]->Run(app);
-        screens[3]->Run(app);
-        app.display();
+        screenmgr->Tick(*app);
+        
+        app->display();
     }
 
     return EXIT_SUCCESS;

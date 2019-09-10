@@ -8,15 +8,16 @@
 namespace UI {
 namespace Controls {
 
-class Button : public MouseEventObserver, public Control {
+class Button : public sf::RectangleShape, public MouseEventObserver {
 public:
-	Button();
-	void setString(const sf::String& str);
-	void update();
+    Button();
+    void setString(const sf::String& str);
+    void update();
     void setPosition(float x, float y);
     void setPosition(sf::Vector2f pos);
     void setSize(float x, float y);
     void setSize(sf::Vector2f size);
+    void setInitialSize(sf::Vector2f size);
     void setFillColor(sf::Color color);
     
     void onMouseEnter();
@@ -24,16 +25,18 @@ public:
     void onMouseClick();
     void onMouseUp();
     
-    Animation fadeInAnim;
-    Animation fadeOutAnim;
+    FadeAnimation fadeInAnim;
+    FadeAnimation fadeOutAnim;
     
     sf::Color hoverColor;
     sf::Color normalColor;
 private:
-	void draw(sf::RenderTarget &target, sf::RenderStates states) const;
-	std::wstring label;
-	sf::RoundedRectangleShape base;
-	sf::Text text;
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+    std::wstring label;
+    sf::RoundedRectangleShape base;
+    sf::Text text;
+    
+    sf::Vector2f initialSize;
 };
 
 }
