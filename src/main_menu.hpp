@@ -11,7 +11,7 @@ namespace UI::Screen {
 class MainMenu : public sf::Drawable, public sf::Transformable {
 public:
     MainMenu(UI::Screen::Base* screen);
-    void update(sf::RenderWindow& app);
+    void update();
 
 private:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const;

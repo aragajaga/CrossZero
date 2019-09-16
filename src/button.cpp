@@ -26,6 +26,19 @@ Button::Button()
     #endif
 }
 
+void Button::setOrigin(sf::Vector2f orig)
+{
+    sf::RectangleShape::setOrigin(orig);
+    sf::Vector2f prevOffset = getMouseCatchOffset();
+    prevOffset -= orig;
+    setMouseCatchOffset(prevOffset);
+}
+
+void Button::setOrigin(float x, float y)
+{
+    setOrigin(sf::Vector2f(x, y));
+}
+
 void Button::setFillColor(sf::Color color)
 {
     base.setFillColor(color);
@@ -80,13 +93,13 @@ void Button::update()
 
     base.setCornersRadius( m_size.y*2/50.f );
 
-    sf::FloatRect textBounds = text.getLocalBounds();
-    float glyphSize = m_size.y*0.48f;
-    text.setCharacterSize(glyphSize);
-    text.move(std::round((m_size.x-textBounds.width)/2.f), std::round((m_size.y-glyphSize)/2.f - m_size.y*3/50));
+    // sf::FloatRect textBounds = text.getLocalBounds();
+    // float glyphSize = m_size.y*0.48f;
+    // text.setCharacterSize(glyphSize);
+    // text.setPosition(std::round((m_size.x-textBounds.width)/2.f), std::round((m_size.y-glyphSize)/2.f - m_size.y*3/50));
     
-    this->setPosition(sf::Vector2f(initialPos.x * (getPosition().x / 640.f), initialPos.y * (getPosition().y / 360.f)));
-    this->setSize(initialSize * (screen.y/360.f));
+    // this->setPosition(sf::Vector2f(initialPos.x * (getPosition().x / 640.f), initialPos.y * (getPosition().y / 360.f)));
+    // this->setSize(initialSize * (screen.y/360.f));
     // std::cout << screen.y/360.f << std::endl;
 }
 

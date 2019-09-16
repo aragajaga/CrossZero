@@ -16,6 +16,8 @@ UI::Screen::GameScreen *gameScreen;
 UI::Screen::Settings *settingsScreen;
 std::vector<Animation *> animations;
 
+sf::Font *font_system;
+
 sf::Texture *mark_texture;
 
 #define CHIP_O false;
@@ -101,6 +103,8 @@ int main(int argc, char * argv[]) {
     */
     // Загрузка ресов
     SharedFont::getInstance().font.loadFromFile("res/CZ.otf");
+    font_system = new sf::Font();
+    font_system->loadFromFile("res/cour.ttf");
     
     sf::Image mark_image;
     mark_image.loadFromFile("res/mark.bmp");
@@ -126,11 +130,11 @@ int main(int argc, char * argv[]) {
     UI::Screen::Background background;
     UI::Screen::TitleScreen titleScreen;
     UI::Screen::LoadingScreen loadingScreen;
+    UI::Screen::FPSCounter fps_counter;
     
     gameScreen = new UI::Screen::GameScreen();
     settingsScreen = new UI::Screen::Settings();
     
-    // UI::Screen::FPSCounter fps_counter;
     // UI::Screen::Settings settings_menu;
 
     // topScreen = &loadingScreen;
@@ -138,11 +142,16 @@ int main(int argc, char * argv[]) {
     screenmgr = new UI::Screen::ScreenManager();
     screenmgr->ChangeTo(&background, SCREEN_LAYER_BACKGROUND);
     screenmgr->ChangeTo(&titleScreen, SCREEN_LAYER_TOP);
+    screenmgr->ChangeTo(&fps_counter, SCREEN_LAYER_OVERLAY);
 
     while (app->isOpen()) {
         sf::Event event;
         while (app->pollEvent(event)) {
             screenmgr->postEvent(event);
+            
+            if (event.type == sf::Event::KeyPressed)
+                if (event.key.code == sf::Keyboard::Escape)
+                    screenmgr->ChangeTo(&titleScreen, SCREEN_LAYER_TOP);
             
             if (event.type == sf::Event::Closed)
                 app->close();

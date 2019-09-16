@@ -4,6 +4,7 @@
 #include "animation.hpp"
 
 extern sf::RenderWindow* app;
+extern sf::Font *font_system;
 // extern MouseEventSubject mouseSubject;
 
 namespace UI {
@@ -55,15 +56,6 @@ TitleScreen::TitleScreen()
     header.setFillColor(sf::Color::White);
 
     #ifdef DEBUG
-    version.setFont(SharedFont::getInstance().font);
-    version.setString("Debug build");
-    version.setCharacterSize(24);
-    version.setFillColor(sf::Color::White);
-    version.setOutlineColor(sf::Color::Black);
-    version.setOutlineThickness(1.f);
-    #endif
-
-    #ifdef DEBUG
     std::cout << "[TitleScreen] Constructed" << std::endl;
     #endif
 }
@@ -76,20 +68,12 @@ int TitleScreen::Run(sf::RenderWindow& app)
         app.getSize().y * (72 - 21) / 480
     );
 
-    version.setPosition(
-        app.getSize().x - version.getLocalBounds().width - 10,
-        10
-    );
-
-    menu.update(app);
+    menu.update();
 
     for (auto& anim : animations)
             anim->onTick();
 
     app.draw(header);
-    #ifdef DEBUG
-    app.draw(version);
-    #endif
     app.draw(menu);
 
     return 0;
@@ -143,11 +127,20 @@ int LoadingScreen::Run(sf::RenderWindow& app)
 
 FPSCounter::FPSCounter()
 {
-    fps.setFont(SharedFont::getInstance().font);
+    fps.setFont(*font_system);
     fps.setPosition(10.f, 10.f);
     fps.setCharacterSize(24);
     fps.setOutlineColor(sf::Color::Black);
     fps.setOutlineThickness(1.f);
+    
+    #ifdef DEBUG
+    version.setFont(*font_system);
+    version.setString("Debug build");
+    version.setCharacterSize(24);
+    version.setFillColor(sf::Color::White);
+    version.setOutlineColor(sf::Color::Black);
+    version.setOutlineThickness(1.f);
+    #endif
 }
 
 int FPSCounter::Run(sf::RenderWindow& app)
@@ -155,7 +148,16 @@ int FPSCounter::Run(sf::RenderWindow& app)
     fps.setString("fps: " + std::to_string(
         static_cast<int>(1000.f/clock.restart().asMilliseconds()))
     );
+    
+    version.setPosition(
+        app.getSize().x - version.getLocalBounds().width - 10,
+        10
+    );
+    
     app.draw(fps);
+    #ifdef DEBUG
+    app.draw(version);
+    #endif
     return 0;
 }
 

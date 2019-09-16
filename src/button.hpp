@@ -13,6 +13,8 @@ public:
     Button();
     void setString(const sf::String& str);
     void update();
+    void setOrigin(float x, float y);
+    void setOrigin(sf::Vector2f orig);
     void setPosition(float x, float y);
     void setPosition(sf::Vector2f pos);
     void setSize(float x, float y);

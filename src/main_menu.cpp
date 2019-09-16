@@ -14,10 +14,7 @@ extern sf::RenderWindow *app;
 
 class PlayButton : public UI::Controls::Button {
 public:
-    PlayButton()
-    {
-        
-    }
+    PlayButton() {}
     
     friend UI::Controls::Button;
     
@@ -30,10 +27,7 @@ public:
 
 class SettingsButton : public UI::Controls::Button {
 public:
-    SettingsButton()
-    {
-        
-    }
+    SettingsButton() {}
     
     friend UI::Controls::Button;
     
@@ -56,6 +50,7 @@ MainMenu::MainMenu(UI::Screen::Base* screen)
     screen->m_mouseEvtSub.subscribe(playButton);
     
     leaderboardButton = new UI::Controls::Button();
+    leaderboardButton->setInitialSize(sf::Vector2f(200.f, 50.f));
     leaderboardButton->setInitialPos(sf::Vector2f(dim.x/2.f, dim.y/2.f));
     leaderboardButton->setOrigin(sf::Vector2f(100.f, 25.f));
     leaderboardButton->setString("Leaderboard");
@@ -63,17 +58,19 @@ MainMenu::MainMenu(UI::Screen::Base* screen)
     
     settingsButton = new SettingsButton();
     settingsButton->setInitialSize(sf::Vector2f(200.f, 50.f));
-    settingsButton->setInitialPos(sf::Vector2f(dim.x/2.f, dim.y/3.f * 2));
+    settingsButton->setInitialPos(sf::Vector2f(dim.x/2.f, dim.y/3.f * 2.f));
     settingsButton->setOrigin(sf::Vector2f(100.f, 25.f));
     settingsButton->setString("Settings");
     screen->m_mouseEvtSub.subscribe(settingsButton);
+    
+    update();
     
     #ifdef DEBUG
     std::cout << "[MainMenu] Constructed" << std::endl;
     #endif
 }
 
-void MainMenu::update(sf::RenderWindow& app)
+void MainMenu::update()
 {
     playButton->update();
     leaderboardButton->update();

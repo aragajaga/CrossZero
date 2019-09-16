@@ -3,6 +3,9 @@
 
 [![Build Status](https://travis-ci.org/Philosoph228/CrossZero.svg?branch=master)](https://travis-ci.org/Philosoph228/CrossZero)
 
+![](screenshot/title.png)
+![](screenshot/game.png)
+
 ## Сборка
 Для сборки требуются:
 * библиотека SFML

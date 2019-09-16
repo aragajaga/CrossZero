@@ -78,7 +78,7 @@ public:
         if (isPlaying())
         {
             #ifdef DEBUG
-            std::cout << "[FadeAnimation] Tick" << std::endl;
+            // std::cout << "[FadeAnimation] Tick" << std::endl;
             #endif
 
             float delta = getElapsed() / m_duration;
