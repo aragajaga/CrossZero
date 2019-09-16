@@ -6,15 +6,18 @@
 #include "mouse_event.hpp"
 #include <cstring>
 
-MouseEventSubject mouseSubject;
+// MouseEventSubject mouseSubject;
 sf::Clock animationClock;
 
 sf::RenderWindow *app;
 UI::Screen::ScreenManager *screenmgr;
 UI::Screen::Base *topScreen;
 UI::Screen::GameScreen *gameScreen;
+UI::Screen::LeaderBoard *leaderboardScreen;
 UI::Screen::Settings *settingsScreen;
 std::vector<Animation *> animations;
+
+sf::Font *font_system;
 
 sf::Texture *mark_texture;
 
@@ -101,6 +104,8 @@ int main(int argc, char * argv[]) {
     */
     // Загрузка ресов
     SharedFont::getInstance().font.loadFromFile("res/CZ.otf");
+    font_system = new sf::Font();
+    font_system->loadFromFile("res/cour.ttf");
     
     sf::Image mark_image;
     mark_image.loadFromFile("res/mark.bmp");
@@ -120,17 +125,18 @@ int main(int argc, char * argv[]) {
     app->setVerticalSyncEnabled(false);
 
     animations = std::vector<Animation *> ();
-    mouseSubject = MouseEventSubject();
+    // mouseSubject = MouseEventSubject();
     animationClock = sf::Clock();
     
     UI::Screen::Background background;
     UI::Screen::TitleScreen titleScreen;
     UI::Screen::LoadingScreen loadingScreen;
+    UI::Screen::FPSCounter fps_counter;
     
     gameScreen = new UI::Screen::GameScreen();
     settingsScreen = new UI::Screen::Settings();
+    leaderboardScreen = new UI::Screen::LeaderBoard();
     
-    // UI::Screen::FPSCounter fps_counter;
     // UI::Screen::Settings settings_menu;
 
     // topScreen = &loadingScreen;
@@ -138,24 +144,22 @@ int main(int argc, char * argv[]) {
     screenmgr = new UI::Screen::ScreenManager();
     screenmgr->ChangeTo(&background, SCREEN_LAYER_BACKGROUND);
     screenmgr->ChangeTo(&loadingScreen, SCREEN_LAYER_TOP);
+    screenmgr->ChangeTo(&fps_counter, SCREEN_LAYER_OVERLAY);
 
     while (app->isOpen()) {
         sf::Event event;
         while (app->pollEvent(event)) {
+            screenmgr->postEvent(event);
+            
+            if (event.type == sf::Event::KeyPressed)
+                if (event.key.code == sf::Keyboard::Escape)
+                    screenmgr->ChangeTo(&titleScreen, SCREEN_LAYER_TOP);
+            
             if (event.type == sf::Event::Closed)
                 app->close();
 
             if (event.type == sf::Event::Resized)
                 app->setView(view = sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(app->getSize().x), static_cast<float>(app->getSize().y))));
-            
-            if (event.type == sf::Event::MouseMoved)
-                mouseSubject.mouseMove(event);
-            
-            if (event.type == sf::Event::MouseButtonPressed)
-                mouseSubject.click(event);
-            
-            if (event.type == sf::Event::MouseButtonReleased)
-                mouseSubject.clickRelease(event);
         }
 
         screenmgr->Tick(*app);

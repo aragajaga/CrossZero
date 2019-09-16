@@ -9,7 +9,8 @@
 
 enum ScreenLayerEnum {
     SCREEN_LAYER_BACKGROUND,
-    SCREEN_LAYER_TOP
+    SCREEN_LAYER_TOP,
+    SCREEN_LAYER_OVERLAY
 };
 
 namespace UI {
@@ -19,7 +20,10 @@ namespace Screen {
 class Base {
 public:
     virtual int Run(sf::RenderWindow& app) = 0;
+    void postEvent(sf::Event &evt);
     void Hide();
+    
+    MouseEventSubject m_mouseEvtSub;
 };
 
 //------------------------------------------------------------------------------
@@ -35,14 +39,22 @@ public:
         screens[layer] = next;
     }
     
+    void postEvent(sf::Event &evt)
+    {
+        screens[0]->postEvent(evt);
+        screens[1]->postEvent(evt);
+        screens[2]->postEvent(evt);
+    }
+    
     inline void Tick(sf::RenderWindow& app)
     {
         screens[0]->Run(app);
         screens[1]->Run(app);
+        screens[2]->Run(app);
     }
     
 private:
-    Base *screens[2];
+    Base *screens[3];
 };
 
 //------------------------------------------------------------------------------
@@ -64,8 +76,17 @@ public:
     void Hide();
 private:
     sf::Text header;
-    sf::Text version;
     ::MainMenu menu;
+};
+
+//------------------------------------------------------------------------------
+
+class LeaderBoard : public Base {
+public:
+    LeaderBoard();
+    int Run(sf::RenderWindow& app);
+private:
+    sf::Text text;
 };
 
 //------------------------------------------------------------------------------
@@ -98,6 +119,7 @@ public:
     int Run(sf::RenderWindow& app);
 private:
     sf::Text fps;
+    sf::Text version;
     sf::Clock clock;
 };
 

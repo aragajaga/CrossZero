@@ -51,6 +51,11 @@ public:
         m_startTime = sf::Time::Zero;
         m_playing = false;
     }
+    
+    void setInterrupt(bool b)
+    {
+        m_doInterrupt = b;
+    }
 private:
     bool m_doInterrupt;
     bool m_playing;
@@ -78,7 +83,7 @@ public:
         if (isPlaying())
         {
             #ifdef DEBUG
-            std::cout << "[FadeAnimation] Tick" << std::endl;
+            // std::cout << "[FadeAnimation] Tick" << std::endl;
             #endif
 
             float delta = getElapsed() / m_duration;

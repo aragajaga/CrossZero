@@ -13,10 +13,13 @@ public:
     Button();
     void setString(const sf::String& str);
     void update();
+    void setOrigin(float x, float y);
+    void setOrigin(sf::Vector2f orig);
     void setPosition(float x, float y);
     void setPosition(sf::Vector2f pos);
     void setSize(float x, float y);
     void setSize(sf::Vector2f size);
+    void setInitialPos(sf::Vector2f pos);
     void setInitialSize(sf::Vector2f size);
     void setFillColor(sf::Color color);
     
@@ -36,6 +39,7 @@ private:
     sf::RoundedRectangleShape base;
     sf::Text text;
     
+    sf::Vector2f initialPos;
     sf::Vector2f initialSize;
 };
 

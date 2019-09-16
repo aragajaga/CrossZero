@@ -4,7 +4,8 @@
 #include "animation.hpp"
 
 extern sf::RenderWindow* app;
-extern MouseEventSubject mouseSubject;
+extern sf::Font *font_system;
+// extern MouseEventSubject mouseSubject;
 
 namespace UI {
 
@@ -12,7 +13,15 @@ namespace Screen {
 
 void Base::Hide()
 {
-    mouseSubject.erase();
+    // m_mouseEvtS.erase();
+}
+
+void Base::postEvent(sf::Event &evt)
+{
+    for (auto &sub : m_mouseEvtSub.m_observers)
+    {
+        m_mouseEvtSub.fire(evt);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -31,7 +40,7 @@ int Background::Run(sf::RenderWindow& app)
     parts.setWindowParams(app.getSize().x, app.getSize().y);
     parts.update(box);
 
-    app.clear();
+    app.clear(sf::Color(239, 228, 176, 255));
     for (const auto& it: parts.getSprites())
         app.draw(it);
     return 0;
@@ -40,20 +49,11 @@ int Background::Run(sf::RenderWindow& app)
 //------------------------------------------------------------------------------
 
 TitleScreen::TitleScreen()
-: menu(::MainMenu())
+: menu(::MainMenu(this))
 {
     header.setFont(SharedFont::getInstance().font);
     header.setString("CrossZero");
-    header.setFillColor(sf::Color::White);
-
-    #ifdef DEBUG
-    version.setFont(SharedFont::getInstance().font);
-    version.setString("Debug build");
-    version.setCharacterSize(24);
-    version.setFillColor(sf::Color::White);
-    version.setOutlineColor(sf::Color::Black);
-    version.setOutlineThickness(1.f);
-    #endif
+    header.setFillColor(sf::Color::Black);
 
     #ifdef DEBUG
     std::cout << "[TitleScreen] Constructed" << std::endl;
@@ -68,20 +68,12 @@ int TitleScreen::Run(sf::RenderWindow& app)
         app.getSize().y * (72 - 21) / 480
     );
 
-    version.setPosition(
-        app.getSize().x - version.getLocalBounds().width - 10,
-        10
-    );
-
-    menu.update(app);
+    menu.update();
 
     for (auto& anim : animations)
             anim->onTick();
 
     app.draw(header);
-    #ifdef DEBUG
-    app.draw(version);
-    #endif
     app.draw(menu);
 
     return 0;
@@ -89,14 +81,34 @@ int TitleScreen::Run(sf::RenderWindow& app)
 
 //------------------------------------------------------------------------------
 
-GameScreen::GameScreen()
-: field()
+LeaderBoard::LeaderBoard()
 {
-
+    text.setFont(SharedFont::getInstance().font);
+    text.setString("Not implemented yet. Check back later.");
+    text.setFillColor(sf::Color::White);
+    text.setOutlineColor(sf::Color::Black);
+    text.setOutlineThickness(1.f);
 }
+
+int LeaderBoard::Run(sf::RenderWindow& app)
+{
+    text.setPosition(
+        (app.getSize().x - text.getLocalBounds().width) / 2,
+        (app.getSize().y - text.getLocalBounds().height) / 2
+    );
+
+    app.draw(text);
+}
+
+//------------------------------------------------------------------------------
+
+GameScreen::GameScreen()
+: field(this)
+{}
 
 int GameScreen::Run(sf::RenderWindow& app)
 {
+    field.Run();
     app.draw(field);
     
     return 0;
@@ -135,11 +147,20 @@ int LoadingScreen::Run(sf::RenderWindow& app)
 
 FPSCounter::FPSCounter()
 {
-    fps.setFont(SharedFont::getInstance().font);
+    fps.setFont(*font_system);
     fps.setPosition(10.f, 10.f);
     fps.setCharacterSize(24);
     fps.setOutlineColor(sf::Color::Black);
     fps.setOutlineThickness(1.f);
+    
+    #ifdef DEBUG
+    version.setFont(*font_system);
+    version.setString("Debug build");
+    version.setCharacterSize(24);
+    version.setFillColor(sf::Color::White);
+    version.setOutlineColor(sf::Color::Black);
+    version.setOutlineThickness(1.f);
+    #endif
 }
 
 int FPSCounter::Run(sf::RenderWindow& app)
@@ -147,7 +168,16 @@ int FPSCounter::Run(sf::RenderWindow& app)
     fps.setString("fps: " + std::to_string(
         static_cast<int>(1000.f/clock.restart().asMilliseconds()))
     );
+    
+    version.setPosition(
+        app.getSize().x - version.getLocalBounds().width - 10,
+        10
+    );
+    
     app.draw(fps);
+    #ifdef DEBUG
+    app.draw(version);
+    #endif
     return 0;
 }
 

@@ -77,6 +77,22 @@ public:
         }
     }
     
+    void fire(sf::Event& event)
+    {
+        switch (event.type)
+        {
+        case sf::Event::MouseMoved:
+            mouseMove(event);
+            break;
+        case sf::Event::MouseButtonPressed:
+            click(event);
+            break;
+        case sf::Event::MouseButtonReleased:
+            clickRelease(event);
+            break;
+        }
+    }
+    
     void mouseMove(sf::Event& event)
     {
         bool top = false;
@@ -116,6 +132,8 @@ public:
         m_observers.clear();
     }
     
+    std::vector<MouseEventObserver *> m_observers;
+    
 private:
     static bool isIntersects(float x, float y, float cx1, float cy1, float cx2,
             float cy2)
@@ -150,8 +168,6 @@ private:
             break;
         }
     }
-    
-    std::vector<MouseEventObserver *> m_observers;
 };
 
 #endif // MOUSE_EVENT_HPP
