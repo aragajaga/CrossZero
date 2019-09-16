@@ -44,7 +44,13 @@ Background::Background()
         .setSpeed(0.5f)
         .setWindowParams(800, 600)
         .build())
-{}
+{
+    btn.setInitialPos(sf::Vector2f(30.f, 30.f));
+    btn.setInitialSize(sf::Vector2f(200.f, 50.f));
+    btn.setString("Test");
+    
+    m_mouseEvtSub.m_observers.push_back(&btn);
+}
 
 int Background::Run(sf::RenderWindow& app)
 {
@@ -54,6 +60,8 @@ int Background::Run(sf::RenderWindow& app)
     app.clear(sf::Color(239, 228, 176, 255));
     for (const auto& it: parts.getSprites())
         app.draw(it);
+    
+    app.draw(btn);
     return 0;
 }
 

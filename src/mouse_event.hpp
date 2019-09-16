@@ -103,9 +103,12 @@ public:
     {
         for (auto& p : m_observers)
         {
-            p->m_hover = false;
-            p->onMouseLeave();
-            p->m_mouseWithin = false;
+            if (p->m_hover == true)
+            {
+                p->m_hover = false;
+                p->onMouseLeave();
+                p->m_mouseWithin = false;
+            }
         }
     }
     

@@ -72,6 +72,7 @@ public:
     int Run(sf::RenderWindow& app);
 private:
     ::SimpleParticles parts;
+    UI::Controls::Button btn;
 };
 
 //------------------------------------------------------------------------------
