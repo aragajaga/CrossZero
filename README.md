@@ -3,8 +3,8 @@
 
 [![Build Status](https://travis-ci.org/Philosoph228/CrossZero.svg?branch=master)](https://travis-ci.org/Philosoph228/CrossZero)
 
-![](screenshot/title.png)
-![](screenshot/game.png)
+![](screenshots/title.png)
+![](screenshots/game.png)
 
 ## Сборка
 Для сборки требуются:
