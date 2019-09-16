@@ -6,7 +6,7 @@
 #include "mouse_event.hpp"
 #include <cstring>
 
-MouseEventSubject mouseSubject;
+// MouseEventSubject mouseSubject;
 sf::Clock animationClock;
 
 sf::RenderWindow *app;
@@ -120,7 +120,7 @@ int main(int argc, char * argv[]) {
     app->setVerticalSyncEnabled(false);
 
     animations = std::vector<Animation *> ();
-    mouseSubject = MouseEventSubject();
+    // mouseSubject = MouseEventSubject();
     animationClock = sf::Clock();
     
     UI::Screen::Background background;
@@ -137,25 +137,18 @@ int main(int argc, char * argv[]) {
     
     screenmgr = new UI::Screen::ScreenManager();
     screenmgr->ChangeTo(&background, SCREEN_LAYER_BACKGROUND);
-    screenmgr->ChangeTo(&loadingScreen, SCREEN_LAYER_TOP);
+    screenmgr->ChangeTo(&titleScreen, SCREEN_LAYER_TOP);
 
     while (app->isOpen()) {
         sf::Event event;
         while (app->pollEvent(event)) {
+            screenmgr->postEvent(event);
+            
             if (event.type == sf::Event::Closed)
                 app->close();
 
             if (event.type == sf::Event::Resized)
                 app->setView(view = sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(app->getSize().x), static_cast<float>(app->getSize().y))));
-            
-            if (event.type == sf::Event::MouseMoved)
-                mouseSubject.mouseMove(event);
-            
-            if (event.type == sf::Event::MouseButtonPressed)
-                mouseSubject.click(event);
-            
-            if (event.type == sf::Event::MouseButtonReleased)
-                mouseSubject.clickRelease(event);
         }
 
         screenmgr->Tick(*app);

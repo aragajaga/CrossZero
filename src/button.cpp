@@ -18,7 +18,7 @@ Button::Button()
     base.setFillColor(sf::Color::White);
 
     text.setFont(::SharedFont::getInstance().font);
-    text.setFillColor(sf::Color::Red);
+    text.setFillColor(sf::Color::Black);
     update();
 
     #ifdef DEBUG
@@ -47,7 +47,12 @@ void Button::setPosition(sf::Vector2f pos)
 void Button::setPosition(float x, float y)
 {
     setPosition(sf::Vector2f(x, y));
-    text.setPosition(sf::Vector2f(x, y));
+}
+
+void Button::setInitialPos(sf::Vector2f pos)
+{
+    initialPos = pos;
+    setPosition(pos);
 }
 
 void Button::setInitialSize(sf::Vector2f size)
@@ -72,26 +77,23 @@ void Button::update()
     auto screen = app->getSize();
     
     sf::Vector2f m_size = base.getSize();
-    // base.scale(sf::Vector2f(screen.y/360.f, screen.y/360.f));
-    
-    // base.setSize( m_size );
+
     base.setCornersRadius( m_size.y*2/50.f );
 
     sf::FloatRect textBounds = text.getLocalBounds();
-    float textCharacterSize = m_size.y*0.48f;
-    text.setCharacterSize( textCharacterSize );
+    float glyphSize = m_size.y*0.48f;
+    text.setCharacterSize(glyphSize);
+    text.move(std::round((m_size.x-textBounds.width)/2.f), std::round((m_size.y-glyphSize)/2.f - m_size.y*3/50));
     
-    text.move(std::round((m_size.x-textBounds.width)/2.f), (m_size.y-textCharacterSize)/2.f - m_size.y*3/50);
-    
+    this->setPosition(sf::Vector2f(initialPos.x * (getPosition().x / 640.f), initialPos.y * (getPosition().y / 360.f)));
     this->setSize(initialSize * (screen.y/360.f));
-    
-    std::cout << screen.y/360.f << std::endl;
+    // std::cout << screen.y/360.f << std::endl;
 }
 
 void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     #ifdef DEBUG
-    std::cout << "[Button] Draw" << std::endl;
+    // std::cout << "[Button] Draw" << std::endl;
     #endif
 
     states.transform = getTransform();

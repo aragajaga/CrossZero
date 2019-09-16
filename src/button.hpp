@@ -17,6 +17,7 @@ public:
     void setPosition(sf::Vector2f pos);
     void setSize(float x, float y);
     void setSize(sf::Vector2f size);
+    void setInitialPos(sf::Vector2f pos);
     void setInitialSize(sf::Vector2f size);
     void setFillColor(sf::Color color);
     
@@ -36,6 +37,7 @@ private:
     sf::RoundedRectangleShape base;
     sf::Text text;
     
+    sf::Vector2f initialPos;
     sf::Vector2f initialSize;
 };
 

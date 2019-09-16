@@ -4,9 +4,13 @@
 #include "stdafx.hpp"
 #include "button.hpp"
 
+namespace UI::Screen {
+    class Base;
+};
+
 class MainMenu : public sf::Drawable, public sf::Transformable {
 public:
-    MainMenu();
+    MainMenu(UI::Screen::Base* screen);
     void update(sf::RenderWindow& app);
 
 private:

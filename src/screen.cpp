@@ -4,7 +4,7 @@
 #include "animation.hpp"
 
 extern sf::RenderWindow* app;
-extern MouseEventSubject mouseSubject;
+// extern MouseEventSubject mouseSubject;
 
 namespace UI {
 
@@ -12,7 +12,15 @@ namespace Screen {
 
 void Base::Hide()
 {
-    mouseSubject.erase();
+    // m_mouseEvtS.erase();
+}
+
+void Base::postEvent(sf::Event &evt)
+{
+    for (auto &sub : m_mouseEvtSub.m_observers)
+    {
+        m_mouseEvtSub.fire(evt);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -40,7 +48,7 @@ int Background::Run(sf::RenderWindow& app)
 //------------------------------------------------------------------------------
 
 TitleScreen::TitleScreen()
-: menu(::MainMenu())
+: menu(::MainMenu(this))
 {
     header.setFont(SharedFont::getInstance().font);
     header.setString("CrossZero");

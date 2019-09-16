@@ -19,7 +19,10 @@ namespace Screen {
 class Base {
 public:
     virtual int Run(sf::RenderWindow& app) = 0;
+    void postEvent(sf::Event &evt);
     void Hide();
+    
+    MouseEventSubject m_mouseEvtSub;
 };
 
 //------------------------------------------------------------------------------
@@ -33,6 +36,12 @@ public:
         if (screens[layer] != nullptr)
             screens[layer]->Hide();
         screens[layer] = next;
+    }
+    
+    void postEvent(sf::Event &evt)
+    {
+        screens[0]->postEvent(evt);
+        screens[1]->postEvent(evt);
     }
     
     inline void Tick(sf::RenderWindow& app)
