@@ -19,11 +19,14 @@ namespace Screen {
 
 class Base {
 public:
+    Base();
     virtual int Run(sf::RenderWindow& app) = 0;
-    void postEvent(sf::Event &evt);
+    bool postEvent(sf::Event &evt);
+    void lostFocus();
     void Hide();
     
     MouseEventSubject m_mouseEvtSub;
+    bool m_mouseTroughOut;
 };
 
 //------------------------------------------------------------------------------
@@ -41,9 +44,27 @@ public:
     
     void postEvent(sf::Event &evt)
     {
-        screens[0]->postEvent(evt);
-        screens[1]->postEvent(evt);
-        screens[2]->postEvent(evt);
+        
+        
+        size_t i = 2;
+        
+        switch (evt.type)
+        {
+        case sf::Event::MouseMoved:
+        case sf::Event::MouseButtonPressed:
+        case sf::Event::MouseButtonReleased:
+            for (; i > 0; i--)
+            {
+                if (screens[i]->postEvent(evt)) break;
+            }
+            
+            while (i--)
+            {
+                screens[i]->lostFocus();
+            }
+        }
+        
+        
     }
     
     inline void Tick(sf::RenderWindow& app)
@@ -75,6 +96,7 @@ public:
     int Run(sf::RenderWindow& app);
     void Hide();
 private:
+    UI::Controls::Button button;
     sf::Text header;
     ::MainMenu menu;
 };
@@ -121,6 +143,8 @@ private:
     sf::Text fps;
     sf::Text version;
     sf::Clock clock;
+    
+    UI::Controls::Button btn;
 };
 
 } // namespace Screen

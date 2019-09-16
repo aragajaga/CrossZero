@@ -11,17 +11,28 @@ namespace UI {
 
 namespace Screen {
 
+Base::Base()
+: m_mouseTroughOut{false} {}
+
 void Base::Hide()
 {
     // m_mouseEvtS.erase();
 }
 
-void Base::postEvent(sf::Event &evt)
+bool Base::postEvent(sf::Event &evt)
 {
+    bool affected;
+    
     for (auto &sub : m_mouseEvtSub.m_observers)
-    {
-        m_mouseEvtSub.fire(evt);
-    }
+        if (m_mouseEvtSub.fire(evt))
+            affected = true;
+    
+    return affected;
+}
+
+void Base::lostFocus()
+{
+    for (auto &sub : m_mouseEvtSub.m_observers) sub->mouseLeave();
 }
 
 //------------------------------------------------------------------------------
@@ -55,6 +66,12 @@ TitleScreen::TitleScreen()
     header.setString("CrossZero");
     header.setFillColor(sf::Color::Black);
 
+    button.setInitialPos(sf::Vector2f(20.f, 20.f));
+    button.setInitialSize(sf::Vector2f(200.f, 50.f));
+    button.setString("Test");
+    
+    m_mouseEvtSub.m_observers.push_back(&button);
+
     #ifdef DEBUG
     std::cout << "[TitleScreen] Constructed" << std::endl;
     #endif
@@ -71,10 +88,11 @@ int TitleScreen::Run(sf::RenderWindow& app)
     menu.update();
 
     for (auto& anim : animations)
-            anim->onTick();
+        anim->onTick();
 
     app.draw(header);
     app.draw(menu);
+    app.draw(button);
 
     return 0;
 }
@@ -161,10 +179,19 @@ FPSCounter::FPSCounter()
     version.setOutlineColor(sf::Color::Black);
     version.setOutlineThickness(1.f);
     #endif
+    
+    btn.setInitialPos(sf::Vector2f(10.f, 10.f));
+    btn.setInitialSize(sf::Vector2f(200.f, 50.f));
+    btn.setString("Test");
+    
+    m_mouseEvtSub.m_observers.push_back(&btn);
 }
 
 int FPSCounter::Run(sf::RenderWindow& app)
 {
+    for (auto& anim : animations)
+        anim->onTick();
+    
     fps.setString("fps: " + std::to_string(
         static_cast<int>(1000.f/clock.restart().asMilliseconds()))
     );
@@ -174,6 +201,7 @@ int FPSCounter::Run(sf::RenderWindow& app)
         10
     );
     
+    app.draw(btn);
     app.draw(fps);
     #ifdef DEBUG
     app.draw(version);

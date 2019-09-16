@@ -61,7 +61,8 @@ void MouseField::onMouseUp()
     
     size_t cell_n = localToCell(mouseLocal);
     
-    if ((mouseLocal.x % 60) > 10 && mouseLocal.y % 60 > 10)
+    if (mouseLocal.x % 60 > 10 &&
+        mouseLocal.y % 60 > 10)
     {
         m_field->placeMark(cell_n);
         #ifdef DEBUG

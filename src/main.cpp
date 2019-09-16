@@ -118,7 +118,7 @@ int main(int argc, char * argv[]) {
     sf::ContextSettings settings;
     //settings.antialiasingLevel = 8;
 
-    app = new sf::RenderWindow(sf::VideoMode(640, 360), "CrossZero", sf::Style::Default, settings);
+    app = new sf::RenderWindow(sf::VideoMode(640, 480), "CrossZero", sf::Style::Default, settings);
 
     sf::View view(app->getDefaultView());
     app->setFramerateLimit(60);
