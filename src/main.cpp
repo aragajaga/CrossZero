@@ -143,7 +143,7 @@ int main(int argc, char * argv[]) {
     
     screenmgr = new UI::Screen::ScreenManager();
     screenmgr->ChangeTo(&background, SCREEN_LAYER_BACKGROUND);
-    screenmgr->ChangeTo(&titleScreen, SCREEN_LAYER_TOP);
+    screenmgr->ChangeTo(&loadingScreen, SCREEN_LAYER_TOP);
     screenmgr->ChangeTo(&fps_counter, SCREEN_LAYER_OVERLAY);
 
     while (app->isOpen()) {

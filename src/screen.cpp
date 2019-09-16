@@ -103,13 +103,12 @@ int LeaderBoard::Run(sf::RenderWindow& app)
 //------------------------------------------------------------------------------
 
 GameScreen::GameScreen()
-: field()
-{
-
-}
+: field(this)
+{}
 
 int GameScreen::Run(sf::RenderWindow& app)
 {
+    field.Run();
     app.draw(field);
     
     return 0;
