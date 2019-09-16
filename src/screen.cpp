@@ -32,7 +32,7 @@ bool Base::postEvent(sf::Event &evt)
 
 void Base::lostFocus()
 {
-    for (auto &sub : m_mouseEvtSub.m_observers) sub->mouseLeave();
+    m_mouseEvtSub.lostFocus();
 }
 
 //------------------------------------------------------------------------------

@@ -20,10 +20,10 @@ namespace Screen {
 class Base {
 public:
     Base();
-    virtual int Run(sf::RenderWindow& app) = 0;
-    bool postEvent(sf::Event &evt);
-    void lostFocus();
     void Hide();
+    virtual int Run(sf::RenderWindow& app) = 0;
+    void lostFocus();
+    bool postEvent(sf::Event &evt);
     
     MouseEventSubject m_mouseEvtSub;
     bool m_mouseTroughOut;
@@ -37,15 +37,12 @@ public:
     
     void ChangeTo(Base * next, ScreenLayerEnum layer)
     {
-        if (screens[layer] != nullptr)
-            screens[layer]->Hide();
+        if (screens[layer] != nullptr) screens[layer]->Hide();
         screens[layer] = next;
     }
     
     void postEvent(sf::Event &evt)
     {
-        
-        
         size_t i = 2;
         
         switch (evt.type)
@@ -53,25 +50,14 @@ public:
         case sf::Event::MouseMoved:
         case sf::Event::MouseButtonPressed:
         case sf::Event::MouseButtonReleased:
-            for (; i > 0; i--)
-            {
-                if (screens[i]->postEvent(evt)) break;
-            }
-            
-            while (i--)
-            {
-                screens[i]->lostFocus();
-            }
+            for (; i; i--) if (screens[i]->postEvent(evt)) break;
+            while (i--) screens[i]->lostFocus();
         }
-        
-        
     }
     
     inline void Tick(sf::RenderWindow& app)
     {
-        screens[0]->Run(app);
-        screens[1]->Run(app);
-        screens[2]->Run(app);
+        for (size_t i = 0; i < 3; i++) screens[i]->Run(app);
     }
     
 private:

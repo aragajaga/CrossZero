@@ -99,6 +99,16 @@ public:
         }
     }
     
+    void lostFocus()
+    {
+        for (auto& p : m_observers)
+        {
+            p->m_hover = false;
+            p->onMouseLeave();
+            p->m_mouseWithin = false;
+        }
+    }
+    
     bool mouseMove(sf::Event& event)
     {
         bool affected = false;
