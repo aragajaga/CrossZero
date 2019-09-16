@@ -13,6 +13,7 @@ sf::RenderWindow *app;
 UI::Screen::ScreenManager *screenmgr;
 UI::Screen::Base *topScreen;
 UI::Screen::GameScreen *gameScreen;
+UI::Screen::LeaderBoard *leaderboardScreen;
 UI::Screen::Settings *settingsScreen;
 std::vector<Animation *> animations;
 
@@ -134,6 +135,7 @@ int main(int argc, char * argv[]) {
     
     gameScreen = new UI::Screen::GameScreen();
     settingsScreen = new UI::Screen::Settings();
+    leaderboardScreen = new UI::Screen::LeaderBoard();
     
     // UI::Screen::Settings settings_menu;
 

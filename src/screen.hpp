@@ -81,6 +81,16 @@ private:
 
 //------------------------------------------------------------------------------
 
+class LeaderBoard : public Base {
+public:
+    LeaderBoard();
+    int Run(sf::RenderWindow& app);
+private:
+    sf::Text text;
+};
+
+//------------------------------------------------------------------------------
+
 class GameScreen : public Base {
 public:
     GameScreen();

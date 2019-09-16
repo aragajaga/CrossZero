@@ -40,7 +40,7 @@ int Background::Run(sf::RenderWindow& app)
     parts.setWindowParams(app.getSize().x, app.getSize().y);
     parts.update(box);
 
-    app.clear();
+    app.clear(sf::Color(239, 228, 176, 255));
     for (const auto& it: parts.getSprites())
         app.draw(it);
     return 0;
@@ -53,7 +53,7 @@ TitleScreen::TitleScreen()
 {
     header.setFont(SharedFont::getInstance().font);
     header.setString("CrossZero");
-    header.setFillColor(sf::Color::White);
+    header.setFillColor(sf::Color::Black);
 
     #ifdef DEBUG
     std::cout << "[TitleScreen] Constructed" << std::endl;
@@ -77,6 +77,27 @@ int TitleScreen::Run(sf::RenderWindow& app)
     app.draw(menu);
 
     return 0;
+}
+
+//------------------------------------------------------------------------------
+
+LeaderBoard::LeaderBoard()
+{
+    text.setFont(SharedFont::getInstance().font);
+    text.setString("Not implemented yet. Check back later.");
+    text.setFillColor(sf::Color::White);
+    text.setOutlineColor(sf::Color::Black);
+    text.setOutlineThickness(1.f);
+}
+
+int LeaderBoard::Run(sf::RenderWindow& app)
+{
+    text.setPosition(
+        (app.getSize().x - text.getLocalBounds().width) / 2,
+        (app.getSize().y - text.getLocalBounds().height) / 2
+    );
+
+    app.draw(text);
 }
 
 //------------------------------------------------------------------------------

@@ -7,6 +7,7 @@
 
 extern UI::Screen::Base *topScreen;
 extern UI::Screen::GameScreen *gameScreen;
+extern UI::Screen::LeaderBoard *leaderboardScreen;
 extern UI::Screen::Settings *settingsScreen;
 extern UI::Screen::ScreenManager *screenmgr;
 
@@ -22,6 +23,19 @@ public:
     {
         UI::Controls::Button::onMouseUp();
         screenmgr->ChangeTo(gameScreen, SCREEN_LAYER_TOP);
+    }
+};
+
+class LeaderboardButton : public UI::Controls::Button {
+public:
+    LeaderboardButton() {}
+    
+    friend UI::Controls::Button;
+    
+    void onMouseUp()
+    {
+        UI::Controls::Button::onMouseUp();
+        screenmgr->ChangeTo(leaderboardScreen, SCREEN_LAYER_TOP);
     }
 };
 
@@ -49,7 +63,7 @@ MainMenu::MainMenu(UI::Screen::Base* screen)
     playButton->setString("Play");
     screen->m_mouseEvtSub.subscribe(playButton);
     
-    leaderboardButton = new UI::Controls::Button();
+    leaderboardButton = new LeaderboardButton();
     leaderboardButton->setInitialSize(sf::Vector2f(200.f, 50.f));
     leaderboardButton->setInitialPos(sf::Vector2f(dim.x/2.f, dim.y/2.f));
     leaderboardButton->setOrigin(sf::Vector2f(100.f, 25.f));

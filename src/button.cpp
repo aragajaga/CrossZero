@@ -93,7 +93,13 @@ void Button::update()
 
     base.setCornersRadius( m_size.y*2/50.f );
 
-    // sf::FloatRect textBounds = text.getLocalBounds();
+    sf::Vector2f bPos = base.getPosition();
+    sf::Vector2f bSize = base.getSize();
+    sf::FloatRect textBounds = text.getLocalBounds();
+    
+    text.setPosition(sf::Vector2f(std::round(bPos.x + (bSize.x - textBounds.width) / 2.f), std::round(bPos.y + (bSize.y - textBounds.height) / 2.f - bSize.y/5)));
+
+    // 
     // float glyphSize = m_size.y*0.48f;
     // text.setCharacterSize(glyphSize);
     // text.setPosition(std::round((m_size.x-textBounds.width)/2.f), std::round((m_size.y-glyphSize)/2.f - m_size.y*3/50));
