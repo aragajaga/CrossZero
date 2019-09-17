@@ -6,6 +6,7 @@
 #include "mouse_event.hpp"
 #include <cstring>
 #include "gamerule.hpp"
+#include <list>
 
 // MouseEventSubject mouseSubject;
 sf::Clock animationClock;
@@ -36,21 +37,46 @@ void host()
     sf::TcpListener listener;
     if (listener.listen(8989) != sf::Socket::Done)
         return;
+    
+    std::list<sf::TcpSocket*> clients;
+    
+    sf::SocketSelector selector;
+    selector.add(listener);
 
-    sf::TcpSocket client;
-    if (listener.accept(client) != sf::Socket::Done)
-        return;
-    std::cout << "Client connected" << std::endl;
-    
-    int assignedChip = MARK_CROSS;
-    if (client.send(&assignedChip, sizeof(bool)) != sf::Socket::Done)
-        return;
-    std::cout << "Assigned chip to client: " << (assignedChip ? 'X' : 'O') << std::endl;
-    
-    struct ClientPost cli_packet;
-    size_t received;
-    client.receive(&cli_packet, sizeof(struct ClientPost), received);
-    std::cout << "Player did move at cell: " << static_cast<int> (cli_packet.coord) << std::endl;
+    while (true)
+    {
+        if (selector.wait())
+        {
+            if (selector.isReady(listener))
+            {
+                sf::TcpSocket* client = new sf::TcpSocket;
+                if (listener.accept(*client) == sf::Socket::Done)
+                {
+                    std::cout << "Player connected" << std::endl;
+                    clients.push_back(client);
+                    selector.add(*client);
+                }
+                else
+                {
+                    delete client;
+                }
+            }
+            else
+            {
+                for (std::list<sf::TcpSocket*>::iterator it = clients.begin(); it != clients.end(); ++it)
+                {
+                    sf::TcpSocket& client = **it;
+                    if (selector.isReady(client))
+                    {
+                        sf::Packet packet;
+                        if (client.receive(packet) == sf::Socket::Done)
+                        {
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 int main(int argc, char * argv[]) {

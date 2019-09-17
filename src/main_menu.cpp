@@ -28,7 +28,17 @@ void FindMatch()
         
         if (status == sf::Socket::Done)
         {
+            std::cout << "Connected to 127.0.0.1" << std::endl;
             screenmgr->ChangeTo(gameScreen, SCREEN_LAYER_TOP);
+
+            size_t received;
+            uint8_t status;
+            if (client.receive(&status, sizeof(uint8_t), received) != sf::Socket::Done)
+            {
+                errorScreen->setString("Cannot receive packet.");
+                screenmgr->ChangeTo(errorScreen, SCREEN_LAYER_TOP);
+            }
+
         } else {
             errorScreen->setString("Cannot connect.");
             screenmgr->ChangeTo(errorScreen, SCREEN_LAYER_TOP);

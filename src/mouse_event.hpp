@@ -88,15 +88,16 @@ public:
         switch (event.type)
         {
         case sf::Event::MouseMoved:
-            mouseMove(event);
+            return mouseMove(event);
             break;
         case sf::Event::MouseButtonPressed:
-            click(event);
+            return click(event);
             break;
         case sf::Event::MouseButtonReleased:
-            clickRelease(event);
+            return clickRelease(event);
             break;
         }
+        return false;
     }
     
     void lostFocus()

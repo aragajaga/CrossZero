@@ -23,12 +23,11 @@ void Base::Hide()
 
 bool Base::postEvent(sf::Event &evt)
 {
-    bool affected;
-    
-    for (auto &sub : m_mouseEvtSub.m_observers)
-        if (m_mouseEvtSub.fire(evt))
-            affected = true;
-    
+    bool affected = false;
+
+    if (m_mouseEvtSub.fire(evt))
+        affected = true;
+
     return affected;
 }
 
@@ -126,6 +125,7 @@ int LeaderBoard::Run(sf::RenderWindow& app)
     );
 
     app.draw(text);
+    return 0;
 }
 
 //------------------------------------------------------------------------------
