@@ -5,6 +5,7 @@
 #include "server/server.hpp"
 #include "mouse_event.hpp"
 #include <cstring>
+#include "gamerule.hpp"
 
 // MouseEventSubject mouseSubject;
 sf::Clock animationClock;
@@ -15,14 +16,14 @@ UI::Screen::Base *topScreen;
 UI::Screen::GameScreen *gameScreen;
 UI::Screen::LeaderBoard *leaderboardScreen;
 UI::Screen::Settings *settingsScreen;
+UI::Screen::LoadingScreen *loadingScreen;
+UI::Screen::TitleScreen *titleScreen;
+UI::Screen::ConnectionError *errorScreen;
 std::vector<Animation *> animations;
 
 sf::Font *font_system;
 
 sf::Texture *mark_texture;
-
-#define CHIP_O false;
-#define CHIP_X true;
 
 struct ClientPost {
     uint8_t coord;
@@ -41,7 +42,7 @@ void host()
         return;
     std::cout << "Client connected" << std::endl;
     
-    bool assignedChip = CHIP_X;
+    int assignedChip = MARK_CROSS;
     if (client.send(&assignedChip, sizeof(bool)) != sf::Socket::Done)
         return;
     std::cout << "Assigned chip to client: " << (assignedChip ? 'X' : 'O') << std::endl;
@@ -71,29 +72,29 @@ int main(int argc, char * argv[]) {
         exit(0);
     }
     
-    sf::TcpSocket client;
-    sf::Socket::Status status = client.connect("127.0.0.1", 8989);
-    std::cout << "Connecting to server..." << std::endl;
-    
-    if (status == sf::Socket::Done) {        
-        std::cout << "Connected!" << std::endl;
-        
-        bool assignedChip;
-        size_t received;
-        if (client.receive(&assignedChip, sizeof(bool), received) != sf::Socket::Done)
-        {
-            exit(1);
-        }
-        std::cout << "Assigned chip: " << (assignedChip ? 'X' : 'O') << std::endl;
-        
-        struct ClientPost cli_post;
-        cli_post.coord = 4;
-        
-        if (client.send(&cli_post, sizeof(struct ClientPost)) != sf::Socket::Done)
-            exit(1);
-    } else {
-        std::cout << "Cannot connect to server. Offline mode." << std::endl;
-    }
+    // sf::TcpSocket client;
+    // sf::Socket::Status status = client.connect("127.0.0.1", 8989);
+    // std::cout << "Connecting to server..." << std::endl;
+    // 
+    // if (status == sf::Socket::Done) {        
+    //     std::cout << "Connected!" << std::endl;
+    //     
+    //     bool assignedChip;
+    //     size_t received;
+    //     if (client.receive(&assignedChip, sizeof(bool), received) != sf::Socket::Done)
+    //     {
+    //         exit(1);
+    //     }
+    //     std::cout << "Assigned chip: " << (assignedChip ? 'X' : 'O') << std::endl;
+    //     
+    //     struct ClientPost cli_post;
+    //     cli_post.coord = 4;
+    //     
+    //     if (client.send(&cli_post, sizeof(struct ClientPost)) != sf::Socket::Done)
+    //         exit(1);
+    // } else {
+    //     std::cout << "Cannot connect to server. Offline mode." << std::endl;
+    // }
     
     /* server::ServerConnectionMng mng;
     mng.listen();
@@ -118,7 +119,7 @@ int main(int argc, char * argv[]) {
     sf::ContextSettings settings;
     //settings.antialiasingLevel = 8;
 
-    app = new sf::RenderWindow(sf::VideoMode(640, 480), "CrossZero", sf::Style::Default, settings);
+    app = new sf::RenderWindow(sf::VideoMode(640, 360), "CrossZero", sf::Style::Default, settings);
 
     sf::View view(app->getDefaultView());
     app->setFramerateLimit(60);
@@ -129,13 +130,14 @@ int main(int argc, char * argv[]) {
     animationClock = sf::Clock();
     
     UI::Screen::Background background;
-    UI::Screen::TitleScreen titleScreen;
-    UI::Screen::LoadingScreen loadingScreen;
     UI::Screen::FPSCounter fps_counter;
     
     gameScreen = new UI::Screen::GameScreen();
     settingsScreen = new UI::Screen::Settings();
     leaderboardScreen = new UI::Screen::LeaderBoard();
+    loadingScreen = new UI::Screen::LoadingScreen();
+    titleScreen = new UI::Screen::TitleScreen();
+    errorScreen = new UI::Screen::ConnectionError();
     
     // UI::Screen::Settings settings_menu;
 
@@ -143,7 +145,7 @@ int main(int argc, char * argv[]) {
     
     screenmgr = new UI::Screen::ScreenManager();
     screenmgr->ChangeTo(&background, SCREEN_LAYER_BACKGROUND);
-    screenmgr->ChangeTo(&loadingScreen, SCREEN_LAYER_TOP);
+    screenmgr->ChangeTo(loadingScreen, SCREEN_LAYER_TOP);
     screenmgr->ChangeTo(&fps_counter, SCREEN_LAYER_OVERLAY);
 
     while (app->isOpen()) {
@@ -153,7 +155,7 @@ int main(int argc, char * argv[]) {
             
             if (event.type == sf::Event::KeyPressed)
                 if (event.key.code == sf::Keyboard::Escape)
-                    screenmgr->ChangeTo(&titleScreen, SCREEN_LAYER_TOP);
+                    screenmgr->ChangeTo(titleScreen, SCREEN_LAYER_TOP);
             
             if (event.type == sf::Event::Closed)
                 app->close();

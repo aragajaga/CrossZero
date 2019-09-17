@@ -5,6 +5,8 @@
 
 extern sf::RenderWindow* app;
 extern sf::Font *font_system;
+extern UI::Screen::ScreenManager *screenmgr;
+extern UI::Screen::TitleScreen *titleScreen;
 // extern MouseEventSubject mouseSubject;
 
 namespace UI {
@@ -142,6 +144,50 @@ int GameScreen::Run(sf::RenderWindow& app)
 
 //------------------------------------------------------------------------------
 
+void ReturnButton::onMouseUp()
+{
+    UI::Controls::Button::onMouseUp();
+    screenmgr->ChangeTo(titleScreen, SCREEN_LAYER_TOP);
+}
+
+ConnectionError::ConnectionError()
+{
+    auto dim = app->getSize();
+    
+    text.setFont(SharedFont::getInstance().font);
+    text.setString("Error.");
+    text.setCharacterSize(24);
+    text.setOutlineColor(sf::Color::Black);
+    text.setOutlineThickness(1.f);
+    
+    text.setPosition(sf::Vector2f((dim.x - text.getLocalBounds().width)/2.f,
+        (dim.y - text.getLocalBounds().height)/2.f));
+    
+    button.setInitialSize(sf::Vector2f(200.f, 50.f));
+    button.setInitialPos(sf::Vector2f(dim.x/2.f, dim.y/3.f*2.f));
+    button.setOrigin(sf::Vector2f(100.f, 25.f));
+    button.setString("Return");
+    m_mouseEvtSub.subscribe(&button);
+}
+
+void ConnectionError::setString(sf::String string)
+{
+    auto dim = app->getSize();
+    
+    text.setString(string);
+    text.setPosition(sf::Vector2f(std::round((dim.x - text.getLocalBounds().width)/2.f),
+        std::round((dim.y - text.getLocalBounds().height)/2.f)));
+}
+
+int ConnectionError::Run(sf::RenderWindow& app)
+{   
+    app.draw(text);
+    app.draw(button);
+    return 0;
+}
+
+//------------------------------------------------------------------------------
+
 LoadingScreen::LoadingScreen()
 {
     auto screen = app->getSize();
@@ -158,6 +204,15 @@ LoadingScreen::LoadingScreen()
     
     text.setPosition(sf::Vector2f((screen.x - text.getLocalBounds().width)/2.f,
         (screen.y - text.getLocalBounds().height)/2.f + 75.f));
+}
+
+void LoadingScreen::setString(sf::String string)
+{
+    auto screen = app->getSize();
+    
+    text.setString(string);
+    text.setPosition(sf::Vector2f(std::round((screen.x - text.getLocalBounds().width)/2.f),
+        std::round((screen.y - text.getLocalBounds().height)/2.f + 75.f)));
 }
 
 int LoadingScreen::Run(sf::RenderWindow& app)

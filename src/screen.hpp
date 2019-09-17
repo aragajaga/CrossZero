@@ -110,10 +110,29 @@ private:
 
 //------------------------------------------------------------------------------
 
+class ReturnButton : public UI::Controls::Button {
+public:
+    ReturnButton() {};
+    void onMouseUp();
+};
+
+class ConnectionError : public Base {
+public:
+    ConnectionError();
+    int Run(sf::RenderWindow& app);
+    void setString(sf::String string);
+private:
+    sf::Text text;
+    ReturnButton button;
+};
+
+//------------------------------------------------------------------------------
+
 class LoadingScreen : public Base {
 public:
     LoadingScreen();
     int Run(sf::RenderWindow& app);
+    void setString(sf::String string);
 private:
     sf::Clock clock;
     sf::RectangleShape spin;
