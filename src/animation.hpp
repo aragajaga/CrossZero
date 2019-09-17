@@ -26,10 +26,6 @@ public:
 
     void play()
     {
-        #ifdef DEBUG
-        std::cout << "[FadeAnimation] Start playing" << std::endl;
-        #endif
-
         if (m_playing && !m_doInterrupt)
             return;
 
@@ -72,6 +68,10 @@ public:
 
     void play(const sf::Color& destColor)
     {
+        #ifdef DEBUG
+        std::cout << "[FadeAnimation] Start playing" << std::endl;
+        #endif
+        
         Animation::play();
 
         m_startColor = m_target->getFillColor();

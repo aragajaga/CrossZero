@@ -5,23 +5,35 @@
 
 extern sf::RenderWindow* app;
 extern sf::Font *font_system;
+extern UI::Screen::ScreenManager *screenmgr;
+extern UI::Screen::TitleScreen *titleScreen;
 // extern MouseEventSubject mouseSubject;
 
 namespace UI {
 
 namespace Screen {
 
+Base::Base()
+: m_mouseTroughOut{false} {}
+
 void Base::Hide()
 {
     // m_mouseEvtS.erase();
 }
 
-void Base::postEvent(sf::Event &evt)
+bool Base::postEvent(sf::Event &evt)
 {
-    for (auto &sub : m_mouseEvtSub.m_observers)
-    {
-        m_mouseEvtSub.fire(evt);
-    }
+    bool affected = false;
+
+    if (m_mouseEvtSub.fire(evt))
+        affected = true;
+
+    return affected;
+}
+
+void Base::lostFocus()
+{
+    m_mouseEvtSub.lostFocus();
 }
 
 //------------------------------------------------------------------------------
@@ -33,7 +45,13 @@ Background::Background()
         .setSpeed(0.5f)
         .setWindowParams(800, 600)
         .build())
-{}
+{
+    btn.setInitialPos(sf::Vector2f(30.f, 30.f));
+    btn.setInitialSize(sf::Vector2f(200.f, 50.f));
+    btn.setString("Test");
+    
+    m_mouseEvtSub.m_observers.push_back(&btn);
+}
 
 int Background::Run(sf::RenderWindow& app)
 {
@@ -43,6 +61,8 @@ int Background::Run(sf::RenderWindow& app)
     app.clear(sf::Color(239, 228, 176, 255));
     for (const auto& it: parts.getSprites())
         app.draw(it);
+    
+    app.draw(btn);
     return 0;
 }
 
@@ -54,6 +74,12 @@ TitleScreen::TitleScreen()
     header.setFont(SharedFont::getInstance().font);
     header.setString("CrossZero");
     header.setFillColor(sf::Color::Black);
+
+    button.setInitialPos(sf::Vector2f(20.f, 20.f));
+    button.setInitialSize(sf::Vector2f(200.f, 50.f));
+    button.setString("Test");
+    
+    m_mouseEvtSub.m_observers.push_back(&button);
 
     #ifdef DEBUG
     std::cout << "[TitleScreen] Constructed" << std::endl;
@@ -71,10 +97,11 @@ int TitleScreen::Run(sf::RenderWindow& app)
     menu.update();
 
     for (auto& anim : animations)
-            anim->onTick();
+        anim->onTick();
 
     app.draw(header);
     app.draw(menu);
+    app.draw(button);
 
     return 0;
 }
@@ -98,6 +125,7 @@ int LeaderBoard::Run(sf::RenderWindow& app)
     );
 
     app.draw(text);
+    return 0;
 }
 
 //------------------------------------------------------------------------------
@@ -111,6 +139,50 @@ int GameScreen::Run(sf::RenderWindow& app)
     field.Run();
     app.draw(field);
     
+    return 0;
+}
+
+//------------------------------------------------------------------------------
+
+void ReturnButton::onMouseUp()
+{
+    UI::Controls::Button::onMouseUp();
+    screenmgr->ChangeTo(titleScreen, SCREEN_LAYER_TOP);
+}
+
+ConnectionError::ConnectionError()
+{
+    auto dim = app->getSize();
+    
+    text.setFont(SharedFont::getInstance().font);
+    text.setString("Error.");
+    text.setCharacterSize(24);
+    text.setOutlineColor(sf::Color::Black);
+    text.setOutlineThickness(1.f);
+    
+    text.setPosition(sf::Vector2f((dim.x - text.getLocalBounds().width)/2.f,
+        (dim.y - text.getLocalBounds().height)/2.f));
+    
+    button.setInitialSize(sf::Vector2f(200.f, 50.f));
+    button.setInitialPos(sf::Vector2f(dim.x/2.f, dim.y/3.f*2.f));
+    button.setOrigin(sf::Vector2f(100.f, 25.f));
+    button.setString("Return");
+    m_mouseEvtSub.subscribe(&button);
+}
+
+void ConnectionError::setString(sf::String string)
+{
+    auto dim = app->getSize();
+    
+    text.setString(string);
+    text.setPosition(sf::Vector2f(std::round((dim.x - text.getLocalBounds().width)/2.f),
+        std::round((dim.y - text.getLocalBounds().height)/2.f)));
+}
+
+int ConnectionError::Run(sf::RenderWindow& app)
+{   
+    app.draw(text);
+    app.draw(button);
     return 0;
 }
 
@@ -132,6 +204,15 @@ LoadingScreen::LoadingScreen()
     
     text.setPosition(sf::Vector2f((screen.x - text.getLocalBounds().width)/2.f,
         (screen.y - text.getLocalBounds().height)/2.f + 75.f));
+}
+
+void LoadingScreen::setString(sf::String string)
+{
+    auto screen = app->getSize();
+    
+    text.setString(string);
+    text.setPosition(sf::Vector2f(std::round((screen.x - text.getLocalBounds().width)/2.f),
+        std::round((screen.y - text.getLocalBounds().height)/2.f + 75.f)));
 }
 
 int LoadingScreen::Run(sf::RenderWindow& app)
@@ -161,10 +242,19 @@ FPSCounter::FPSCounter()
     version.setOutlineColor(sf::Color::Black);
     version.setOutlineThickness(1.f);
     #endif
+    
+    btn.setInitialPos(sf::Vector2f(10.f, 10.f));
+    btn.setInitialSize(sf::Vector2f(200.f, 50.f));
+    btn.setString("Test");
+    
+    m_mouseEvtSub.m_observers.push_back(&btn);
 }
 
 int FPSCounter::Run(sf::RenderWindow& app)
 {
+    for (auto& anim : animations)
+        anim->onTick();
+    
     fps.setString("fps: " + std::to_string(
         static_cast<int>(1000.f/clock.restart().asMilliseconds()))
     );
@@ -174,6 +264,7 @@ int FPSCounter::Run(sf::RenderWindow& app)
         10
     );
     
+    app.draw(btn);
     app.draw(fps);
     #ifdef DEBUG
     app.draw(version);

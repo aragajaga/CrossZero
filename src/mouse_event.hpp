@@ -51,56 +51,79 @@ public:
         m_observers.insert(m_observers.begin(), obs);
     }
     
-    void click(sf::Event& event)
+    bool click(sf::Event& event)
     {
+        bool affected = false;
         for (auto& p : m_observers)
         {
             if (isIntersects(event, p->getMouseCatchOffset(),
                     p->getMouseCatchSize()))
             {
+                affected = true;
                 p->onMouseClick();
                 break;
             }
         }
+        return affected;
     }
     
-    void clickRelease(sf::Event& event)
+    bool clickRelease(sf::Event& event)
     {
+        bool affected = false;
         for (auto& p : m_observers)
         {
             if (isIntersects(event, p->getMouseCatchOffset(),
                     p->getMouseCatchSize()))
             {
+                affected = true;
                 p->onMouseUp();
                 break;
             }
         }
+        return affected;
     }
     
-    void fire(sf::Event& event)
+    bool fire(sf::Event& event)
     {
         switch (event.type)
         {
         case sf::Event::MouseMoved:
-            mouseMove(event);
+            return mouseMove(event);
             break;
         case sf::Event::MouseButtonPressed:
-            click(event);
+            return click(event);
             break;
         case sf::Event::MouseButtonReleased:
-            clickRelease(event);
+            return clickRelease(event);
             break;
+        }
+        return false;
+    }
+    
+    void lostFocus()
+    {
+        for (auto& p : m_observers)
+        {
+            if (p->m_hover == true)
+            {
+                p->m_hover = false;
+                p->onMouseLeave();
+                p->m_mouseWithin = false;
+            }
         }
     }
     
-    void mouseMove(sf::Event& event)
+    bool mouseMove(sf::Event& event)
     {
+        bool affected = false;
         bool top = false;
         for (auto& p : m_observers)
         {
             if (isIntersects(event, p->getMouseCatchOffset(),
                     p->getMouseCatchSize()))
             {
+                affected = true;
+                
                 if (!top) // trigger
                 {
                     top = true;
@@ -125,6 +148,8 @@ public:
                 p->m_mouseWithin = false;
             }
         }
+        
+        return affected;
     }
     
     void erase()

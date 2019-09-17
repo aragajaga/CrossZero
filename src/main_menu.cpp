@@ -2,6 +2,8 @@
 #include "mouse_event.hpp"
 #include "screen.hpp"
 #include "settings_screen.hpp"
+#include <SFML/Network.hpp>
+#include <thread>
 
 // extern MouseEventSubject mouseSubject;
 
@@ -10,8 +12,40 @@ extern UI::Screen::GameScreen *gameScreen;
 extern UI::Screen::LeaderBoard *leaderboardScreen;
 extern UI::Screen::Settings *settingsScreen;
 extern UI::Screen::ScreenManager *screenmgr;
+extern UI::Screen::LoadingScreen *loadingScreen;
+extern UI::Screen::ConnectionError *errorScreen;
 
 extern sf::RenderWindow *app;
+
+void FindMatch()
+{
+    screenmgr->ChangeTo(loadingScreen, SCREEN_LAYER_TOP);
+    loadingScreen->setString("Connecting to the server...");
+    
+    std::thread connThread([](){
+        sf::TcpSocket client;
+        sf::Socket::Status status = client.connect("127.0.0.1", 8989);
+        
+        if (status == sf::Socket::Done)
+        {
+            std::cout << "Connected to 127.0.0.1" << std::endl;
+            screenmgr->ChangeTo(gameScreen, SCREEN_LAYER_TOP);
+
+            size_t received;
+            uint8_t status;
+            if (client.receive(&status, sizeof(uint8_t), received) != sf::Socket::Done)
+            {
+                errorScreen->setString("Cannot receive packet.");
+                screenmgr->ChangeTo(errorScreen, SCREEN_LAYER_TOP);
+            }
+
+        } else {
+            errorScreen->setString("Cannot connect.");
+            screenmgr->ChangeTo(errorScreen, SCREEN_LAYER_TOP);
+        }
+    });
+    connThread.detach();
+}
 
 class PlayButton : public UI::Controls::Button {
 public:
@@ -22,7 +56,8 @@ public:
     void onMouseUp()
     {
         UI::Controls::Button::onMouseUp();
-        screenmgr->ChangeTo(gameScreen, SCREEN_LAYER_TOP);
+        // screenmgr->ChangeTo(gameScreen, SCREEN_LAYER_TOP);
+        FindMatch();
     }
 };
 

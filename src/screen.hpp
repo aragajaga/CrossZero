@@ -19,11 +19,14 @@ namespace Screen {
 
 class Base {
 public:
-    virtual int Run(sf::RenderWindow& app) = 0;
-    void postEvent(sf::Event &evt);
+    Base();
     void Hide();
+    virtual int Run(sf::RenderWindow& app) = 0;
+    void lostFocus();
+    bool postEvent(sf::Event &evt);
     
     MouseEventSubject m_mouseEvtSub;
+    bool m_mouseTroughOut;
 };
 
 //------------------------------------------------------------------------------
@@ -34,23 +37,27 @@ public:
     
     void ChangeTo(Base * next, ScreenLayerEnum layer)
     {
-        if (screens[layer] != nullptr)
-            screens[layer]->Hide();
+        if (screens[layer] != nullptr) screens[layer]->Hide();
         screens[layer] = next;
     }
     
     void postEvent(sf::Event &evt)
     {
-        screens[0]->postEvent(evt);
-        screens[1]->postEvent(evt);
-        screens[2]->postEvent(evt);
+        size_t i = 2;
+        
+        switch (evt.type)
+        {
+        case sf::Event::MouseMoved:
+        case sf::Event::MouseButtonPressed:
+        case sf::Event::MouseButtonReleased:
+            for (; i; i--) if (screens[i]->postEvent(evt)) break;
+            while (i--) screens[i]->lostFocus();
+        }
     }
     
     inline void Tick(sf::RenderWindow& app)
     {
-        screens[0]->Run(app);
-        screens[1]->Run(app);
-        screens[2]->Run(app);
+        for (size_t i = 0; i < 3; i++) screens[i]->Run(app);
     }
     
 private:
@@ -65,6 +72,7 @@ public:
     int Run(sf::RenderWindow& app);
 private:
     ::SimpleParticles parts;
+    UI::Controls::Button btn;
 };
 
 //------------------------------------------------------------------------------
@@ -75,6 +83,7 @@ public:
     int Run(sf::RenderWindow& app);
     void Hide();
 private:
+    UI::Controls::Button button;
     sf::Text header;
     ::MainMenu menu;
 };
@@ -101,10 +110,29 @@ private:
 
 //------------------------------------------------------------------------------
 
+class ReturnButton : public UI::Controls::Button {
+public:
+    ReturnButton() {};
+    void onMouseUp();
+};
+
+class ConnectionError : public Base {
+public:
+    ConnectionError();
+    int Run(sf::RenderWindow& app);
+    void setString(sf::String string);
+private:
+    sf::Text text;
+    ReturnButton button;
+};
+
+//------------------------------------------------------------------------------
+
 class LoadingScreen : public Base {
 public:
     LoadingScreen();
     int Run(sf::RenderWindow& app);
+    void setString(sf::String string);
 private:
     sf::Clock clock;
     sf::RectangleShape spin;
@@ -121,6 +149,8 @@ private:
     sf::Text fps;
     sf::Text version;
     sf::Clock clock;
+    
+    UI::Controls::Button btn;
 };
 
 } // namespace Screen

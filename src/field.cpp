@@ -3,6 +3,7 @@
 #include "animation.hpp"
 #include <cmath>
 #include <iostream>
+#include "gamerule.hpp"
 
 uint8_t field_data[9];
 
@@ -61,7 +62,8 @@ void MouseField::onMouseUp()
     
     size_t cell_n = localToCell(mouseLocal);
     
-    if ((mouseLocal.x % 60) > 10 && mouseLocal.y % 60 > 10)
+    if (mouseLocal.x % 60 > 10 &&
+        mouseLocal.y % 60 > 10)
     {
         m_field->placeMark(cell_n);
         #ifdef DEBUG
@@ -117,6 +119,11 @@ bool xMark = true;
 
 void Field::placeMark(size_t cell)
 {
+    if (field_data[cell] != MARK_EMPTY)
+        return;
+    
+    field_data[cell] = xMark ? MARK_CROSS : MARK_CIRCLE;
+    
     sf::RectangleShape *mark = new sf::RectangleShape();
     
     mark->setTexture(mark_texture);
@@ -159,13 +166,6 @@ void Field::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     target.draw(base, states);
     
-    for (auto &c : cells)
-    {
-        target.draw(c, states);
-    }
-    
-    for (auto &m : m_marks)
-    {
-        target.draw(*m, states);
-    }
+    for (auto &c : cells) target.draw(c, states);
+    for (auto &m : m_marks) target.draw(*m, states);
 }

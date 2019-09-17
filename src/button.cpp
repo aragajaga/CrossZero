@@ -122,6 +122,7 @@ void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 void Button::onMouseEnter()
 {
+    std::cout << "[ON MOUSE ENTER]" << std::endl;
     fadeOutAnim.stop();
     fadeInAnim.play(hoverColor);
 }
