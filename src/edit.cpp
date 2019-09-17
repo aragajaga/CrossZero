@@ -4,7 +4,7 @@ namespace UI::Controls {
 
 EditControl::EditControl()
 {
-    beam.setPosition(10, 10);   
+    beam.setPosition(10, 10);
     innerText.setString("Some text");
 }
 

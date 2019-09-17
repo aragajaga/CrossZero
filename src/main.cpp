@@ -111,7 +111,7 @@ struct GameSettings {
 } game_settings;
 
 int main(int argc, char * argv[]) {
-    
+
     #ifdef DEBUG
     std::cout << "This is a debug build" << std::endl;
     #endif

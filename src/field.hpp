@@ -34,12 +34,12 @@ private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
     std::vector<sf::RectangleShape> cells;
     sf::RectangleShape base;
-    
+
     sf::RectangleShape mark;
     sf::RectangleShape mark2;
-    
+
     MouseField m_mouseField;
-    
+
     int m_prevHiglightCell;
     std::vector<FadeAnimation *> m_animations;
     std::vector<sf::RectangleShape *> m_marks;
