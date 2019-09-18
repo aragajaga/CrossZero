@@ -10,28 +10,28 @@ public:
     MouseEventObserver()
     : m_hover(false),
       m_mouseWithin(false) {};
-      
-    virtual void onMouseMove() {};
+
+    virtual void onMouseMove(sf::Event& event) {};
     virtual void onMouseEnter() {};
     virtual void onMouseLeave() {};
     virtual void onMouseClick() {};
-    virtual void onMouseUp() {};
-    
+    virtual void onMouseUp(sf::Event& event) {};
+
     void setMouseCatchOffset(sf::Vector2f newCatch)
     {
         m_mouseCatchOffset = newCatch;
     }
-    
+
     void setMouseCatchSize(sf::Vector2f newCatchSize)
     {
         m_mouseCatchSize = newCatchSize;
     }
-    
+
     sf::Vector2f getMouseCatchOffset() const
     {
         return m_mouseCatchOffset;
     }
-    
+
     sf::Vector2f getMouseCatchSize() const
     {
         return m_mouseCatchSize;
@@ -45,12 +45,12 @@ private:
 };
 
 class MouseEventSubject {
-public:   
+public:
     void subscribe(MouseEventObserver* obs)
     {
         m_observers.insert(m_observers.begin(), obs);
     }
-    
+
     bool click(sf::Event& event)
     {
         bool affected = false;
@@ -66,7 +66,7 @@ public:
         }
         return affected;
     }
-    
+
     bool clickRelease(sf::Event& event)
     {
         bool affected = false;
@@ -76,13 +76,13 @@ public:
                     p->getMouseCatchSize()))
             {
                 affected = true;
-                p->onMouseUp();
+                p->onMouseUp(event);
                 break;
             }
         }
         return affected;
     }
-    
+
     bool fire(sf::Event& event)
     {
         switch (event.type)
@@ -99,7 +99,7 @@ public:
         }
         return false;
     }
-    
+
     void lostFocus()
     {
         for (auto& p : m_observers)
@@ -112,7 +112,7 @@ public:
             }
         }
     }
-    
+
     bool mouseMove(sf::Event& event)
     {
         bool affected = false;
@@ -123,19 +123,19 @@ public:
                     p->getMouseCatchSize()))
             {
                 affected = true;
-                
+
                 if (!top) // trigger
                 {
                     top = true;
-                    
+
                     if (p->m_mouseWithin == false)
                     {
                         p->m_mouseWithin = true;
                         p->onMouseEnter();
                     }
-                    
+
                     p->m_hover = true;
-                    p->onMouseMove();
+                    p->onMouseMove(event);
                 // TODO
                 } else if (p->m_hover == true) {
                     p->m_hover = false;
@@ -148,17 +148,17 @@ public:
                 p->m_mouseWithin = false;
             }
         }
-        
+
         return affected;
     }
-    
+
     void erase()
     {
         m_observers.clear();
     }
-    
+
     std::vector<MouseEventObserver *> m_observers;
-    
+
 private:
     static bool isIntersects(float x, float y, float cx1, float cy1, float cx2,
             float cy2)
@@ -178,7 +178,7 @@ private:
                     mouseCatch.x+mouseCatchSize.x,
                     mouseCatch.y+mouseCatchSize.y);
             break;
-        
+
         case sf::Event::EventType::MouseButtonReleased:
         case sf::Event::EventType::MouseButtonPressed:
             return isIntersects(

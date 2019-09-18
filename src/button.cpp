@@ -88,7 +88,7 @@ void Button::setSize(float x, float y)
 void Button::update()
 {
     auto screen = app->getSize();
-    
+
     sf::Vector2f m_size = base.getSize();
 
     base.setCornersRadius( m_size.y*2/50.f );
@@ -96,14 +96,14 @@ void Button::update()
     sf::Vector2f bPos = base.getPosition();
     sf::Vector2f bSize = base.getSize();
     sf::FloatRect textBounds = text.getLocalBounds();
-    
+
     text.setPosition(sf::Vector2f(std::round(bPos.x + (bSize.x - textBounds.width) / 2.f), std::round(bPos.y + (bSize.y - textBounds.height) / 2.f - bSize.y/5)));
 
-    // 
+    //
     // float glyphSize = m_size.y*0.48f;
     // text.setCharacterSize(glyphSize);
     // text.setPosition(std::round((m_size.x-textBounds.width)/2.f), std::round((m_size.y-glyphSize)/2.f - m_size.y*3/50));
-    
+
     // this->setPosition(sf::Vector2f(initialPos.x * (getPosition().x / 640.f), initialPos.y * (getPosition().y / 360.f)));
     // this->setSize(initialSize * (screen.y/360.f));
     // std::cout << screen.y/360.f << std::endl;
@@ -139,7 +139,7 @@ void Button::onMouseClick()
     base.setFillColor(sf::Color(0xFF, 0x88, 0));
 }
 
-void Button::onMouseUp()
+void Button::onMouseUp(sf::Event& event)
 {
     if (m_mouseWithin)
         base.setFillColor(hoverColor);

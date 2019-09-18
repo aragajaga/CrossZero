@@ -10,7 +10,7 @@ Settings::Settings()
     splash.setOutlineColor(sf::Color::Black);
     splash.setOutlineThickness(1.f);
     splash.setFillColor(sf::Color::White);
-    
+
     field.setSize(sf::Vector2f(100, 40));
 }
 
@@ -23,7 +23,7 @@ int Settings::Run(sf::RenderWindow& app)
 
     app.draw(splash);
     app.draw(field);
-    
+
     return 0;
 }
 

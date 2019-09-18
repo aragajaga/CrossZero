@@ -22,15 +22,15 @@ public:
     void setInitialPos(sf::Vector2f pos);
     void setInitialSize(sf::Vector2f size);
     void setFillColor(sf::Color color);
-    
+
     void onMouseEnter();
     void onMouseLeave();
     void onMouseClick();
-    void onMouseUp();
-    
+    void onMouseUp(sf::Event& event);
+
     FadeAnimation fadeInAnim;
     FadeAnimation fadeOutAnim;
-    
+
     sf::Color hoverColor;
     sf::Color normalColor;
 private:
@@ -38,7 +38,7 @@ private:
     std::wstring label;
     sf::RoundedRectangleShape base;
     sf::Text text;
-    
+
     sf::Vector2f initialPos;
     sf::Vector2f initialSize;
 };

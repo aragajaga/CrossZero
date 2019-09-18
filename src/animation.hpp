@@ -47,7 +47,7 @@ public:
         m_startTime = sf::Time::Zero;
         m_playing = false;
     }
-    
+
     void setInterrupt(bool b)
     {
         m_doInterrupt = b;
@@ -71,7 +71,7 @@ public:
         #ifdef DEBUG
         std::cout << "[FadeAnimation] Start playing" << std::endl;
         #endif
-        
+
         Animation::play();
 
         m_startColor = m_target->getFillColor();

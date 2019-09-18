@@ -24,7 +24,7 @@ public:
     virtual int Run(sf::RenderWindow& app) = 0;
     void lostFocus();
     bool postEvent(sf::Event &evt);
-    
+
     MouseEventSubject m_mouseEvtSub;
     bool m_mouseTroughOut;
 };
@@ -34,17 +34,17 @@ public:
 class ScreenManager {
 public:
     ScreenManager() :screens{} {};
-    
+
     void ChangeTo(Base * next, ScreenLayerEnum layer)
     {
         if (screens[layer] != nullptr) screens[layer]->Hide();
         screens[layer] = next;
     }
-    
+
     void postEvent(sf::Event &evt)
     {
         size_t i = 2;
-        
+
         switch (evt.type)
         {
         case sf::Event::MouseMoved:
@@ -54,12 +54,12 @@ public:
             while (i--) screens[i]->lostFocus();
         }
     }
-    
+
     inline void Tick(sf::RenderWindow& app)
     {
         for (size_t i = 0; i < 3; i++) screens[i]->Run(app);
     }
-    
+
 private:
     Base *screens[3];
 };
@@ -113,7 +113,7 @@ private:
 class ReturnButton : public UI::Controls::Button {
 public:
     ReturnButton() {};
-    void onMouseUp();
+    void onMouseUp(sf::Event& event);
 };
 
 class ConnectionError : public Base {
@@ -149,7 +149,7 @@ private:
     sf::Text fps;
     sf::Text version;
     sf::Clock clock;
-    
+
     UI::Controls::Button btn;
 };
 
