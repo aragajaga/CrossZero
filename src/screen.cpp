@@ -144,9 +144,9 @@ int GameScreen::Run(sf::RenderWindow& app)
 
 //------------------------------------------------------------------------------
 
-void ReturnButton::onMouseUp()
+void ReturnButton::onMouseUp(sf::Event& event)
 {
-    UI::Controls::Button::onMouseUp();
+    UI::Controls::Button::onMouseUp(event);
     screenmgr->ChangeTo(titleScreen, SCREEN_LAYER_TOP);
 }
 

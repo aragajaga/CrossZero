@@ -11,11 +11,11 @@ public:
     : m_hover(false),
       m_mouseWithin(false) {};
 
-    virtual void onMouseMove() {};
+    virtual void onMouseMove(sf::Event& event) {};
     virtual void onMouseEnter() {};
     virtual void onMouseLeave() {};
     virtual void onMouseClick() {};
-    virtual void onMouseUp() {};
+    virtual void onMouseUp(sf::Event& event) {};
 
     void setMouseCatchOffset(sf::Vector2f newCatch)
     {
@@ -76,7 +76,7 @@ public:
                     p->getMouseCatchSize()))
             {
                 affected = true;
-                p->onMouseUp();
+                p->onMouseUp(event);
                 break;
             }
         }
@@ -135,7 +135,7 @@ public:
                     }
 
                     p->m_hover = true;
-                    p->onMouseMove();
+                    p->onMouseMove(event);
                 // TODO
                 } else if (p->m_hover == true) {
                     p->m_hover = false;

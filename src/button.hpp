@@ -26,7 +26,7 @@ public:
     void onMouseEnter();
     void onMouseLeave();
     void onMouseClick();
-    void onMouseUp();
+    void onMouseUp(sf::Event& event);
 
     FadeAnimation fadeInAnim;
     FadeAnimation fadeOutAnim;

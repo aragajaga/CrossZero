@@ -53,9 +53,9 @@ public:
 
     friend UI::Controls::Button;
 
-    void onMouseUp()
+    void onMouseUp(sf::Event& event)
     {
-        UI::Controls::Button::onMouseUp();
+        UI::Controls::Button::onMouseUp(event);
         // screenmgr->ChangeTo(gameScreen, SCREEN_LAYER_TOP);
         FindMatch();
     }
@@ -67,9 +67,9 @@ public:
 
     friend UI::Controls::Button;
 
-    void onMouseUp()
+    void onMouseUp(sf::Event& event)
     {
-        UI::Controls::Button::onMouseUp();
+        UI::Controls::Button::onMouseUp(event);
         screenmgr->ChangeTo(leaderboardScreen, SCREEN_LAYER_TOP);
     }
 };

@@ -139,7 +139,7 @@ void Button::onMouseClick()
     base.setFillColor(sf::Color(0xFF, 0x88, 0));
 }
 
-void Button::onMouseUp()
+void Button::onMouseUp(sf::Event& event)
 {
     if (m_mouseWithin)
         base.setFillColor(hoverColor);

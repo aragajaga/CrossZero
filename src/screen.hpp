@@ -113,7 +113,7 @@ private:
 class ReturnButton : public UI::Controls::Button {
 public:
     ReturnButton() {};
-    void onMouseUp();
+    void onMouseUp(sf::Event& event);
 };
 
 class ConnectionError : public Base {

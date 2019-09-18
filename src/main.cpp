@@ -108,7 +108,15 @@ struct GameSettings {
 
     std::string server_ip;
     unsigned int server_port;
-} game_settings;
+} game_settings{
+    640,
+    360,
+    0,
+    60,
+    true,
+    "127.0.0.1",
+    8686
+};
 
 int main(int argc, char * argv[]) {
 
