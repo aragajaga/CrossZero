@@ -4,6 +4,7 @@
 #include "settings_screen.hpp"
 #include <SFML/Network.hpp>
 #include <thread>
+#include "gamerule.hpp"
 
 // extern MouseEventSubject mouseSubject;
 
@@ -15,28 +16,59 @@ extern UI::Screen::ScreenManager *screenmgr;
 extern UI::Screen::LoadingScreen *loadingScreen;
 extern UI::Screen::ConnectionError *errorScreen;
 
+extern GameSettings game_settings;
+extern void doOpponentTurn(uint8_t cell);
+
 extern sf::RenderWindow *app;
+sf::TcpSocket client;
 
 void FindMatch()
 {
     screenmgr->ChangeTo(loadingScreen, SCREEN_LAYER_TOP);
-    loadingScreen->setString("Connecting to the server...");
+
+    #ifdef DEBUG
+    std::string loadingStatus = "Connecting to " + game_settings.server_ip + ":" + std::to_string(game_settings.server_port) +  "...";
+    loadingScreen->setString(loadingStatus);
+    #else
+    loadingScreen->setString("Connecting to server...");
+    #endif
 
     std::thread connThread([](){
-        sf::TcpSocket client;
-        sf::Socket::Status status = client.connect("127.0.0.1", 8989);
+        sf::Socket::Status status = client.connect(game_settings.server_ip, game_settings.server_port);
 
         if (status == sf::Socket::Done)
         {
             std::cout << "Connected to 127.0.0.1" << std::endl;
-            screenmgr->ChangeTo(gameScreen, SCREEN_LAYER_TOP);
+            loadingScreen->setString("Connected");
 
-            size_t received;
-            uint8_t status;
-            if (client.receive(&status, sizeof(uint8_t), received) != sf::Socket::Done)
+            sf::Packet packet;
+            while (true)
             {
-                errorScreen->setString("Cannot receive packet.");
-                screenmgr->ChangeTo(errorScreen, SCREEN_LAYER_TOP);
+                if (client.receive(packet) == sf::Socket::Done)
+                {
+                    sf::Uint8 packet_id;
+                    packet >> packet_id;
+
+                    switch (packet_id)
+                    {
+                    case PACKET_TURN:
+                        {
+                        sf::Uint8 cell;
+                        packet >> cell;
+
+                        std::cout << "[SERVER] Opponent turn: " << static_cast<int> (cell) << std::endl;
+
+                        doOpponentTurn(cell);
+                        }
+                        break;
+                    case PACKET_OPPONENTWAIT:
+                        loadingScreen->setString("Waiting opponent...");
+                        break;
+                    case PACKET_OPPONENTREADY:
+                        screenmgr->ChangeTo(gameScreen, SCREEN_LAYER_TOP);
+                        break;
+                    }
+                }
             }
 
         } else {

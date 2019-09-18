@@ -33,6 +33,47 @@ struct ClientPost {
     uint8_t coord;
 };
 
+class Match {
+public:
+    Match() : field{} {};
+
+    sf::TcpSocket *player1;
+    sf::TcpSocket *player2;
+
+    uint8_t field[9];
+};
+
+std::vector<Match *> g_matches;
+
+bool first_player = true;
+Match *tmpMatch;
+
+void match_make(sf::TcpSocket *client)
+{
+    if (first_player)
+    {
+        tmpMatch = new Match();
+        tmpMatch->player1 = client;
+
+        sf::Packet packet;
+        packet << sf::Uint8(PACKET_OPPONENTWAIT);
+        client->send(packet);
+
+        first_player = false;
+        return;
+    }
+
+    tmpMatch->player2 = client;
+
+    sf::Packet packet;
+    packet << sf::Uint8(PACKET_OPPONENTREADY);
+    tmpMatch->player1->send(packet);
+    tmpMatch->player2->send(packet);
+
+    g_matches.push_back(tmpMatch);
+    first_player = true;
+}
+
 void host()
 {
     std::cout << "Starting server" << std::endl;
@@ -56,6 +97,7 @@ void host()
                 if (listener.accept(*client) == sf::Socket::Done)
                 {
                     std::cout << "Player connected" << std::endl;
+                    match_make(client);
                     clients.push_back(client);
                     selector.add(*client);
                 }
@@ -74,6 +116,44 @@ void host()
                         sf::Packet packet;
                         if (client.receive(packet) == sf::Socket::Done)
                         {
+                            sf::Uint8 packet_id;
+                            packet >> packet_id;
+
+                            switch (packet_id)
+                            {
+                            case PACKET_TURN:
+                                {
+                                std::cout << "Player did turn" << std::endl;
+
+                                sf::Uint8 cell;
+                                packet >> cell;
+
+                                for (auto& match : g_matches)
+                                {
+                                    if (match->player1 == &client || match->player2 == &client)
+                                    {
+                                        if (match->field[cell] == MARK_EMPTY)
+                                        {
+                                            match->field[cell] = cell;
+
+                                            if (match->player1 == &client)
+                                            {
+                                                match->player2->send(packet);
+                                                std::cout << "Send data to player 2" << std::endl;
+                                            }
+                                            else if (match->player2 == &client)
+                                            {
+                                                match->player1->send(packet);
+                                                std::cout << "Send data to player 1" << std::endl;
+                                            }
+                                        }
+                                    }
+                                }
+                                }
+                                break;
+                            }
+
+
                         }
                     }
                 }
@@ -94,21 +174,11 @@ void generateDefaultSettingsFile(mINI::INIFile &file)
     ini["settings"]["vsync"]                = "1";
 
     ini["settings"]["server_ip"]    = "127.0.0.1";
-    ini["settings"]["server_port"]  = "8686";
+    ini["settings"]["server_port"]  = "8989";
     file.generate(ini);
 }
 
-struct GameSettings {
-    unsigned int screen_w;
-    unsigned int screen_h;
-
-    uint8_t antialiasing_level;
-    unsigned int framerate_limit;
-    bool vsync;
-
-    std::string server_ip;
-    unsigned int server_port;
-} game_settings{
+GameSettings game_settings{
     640,
     360,
     0,

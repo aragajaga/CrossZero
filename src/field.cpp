@@ -4,11 +4,23 @@
 #include <cmath>
 #include <iostream>
 #include "gamerule.hpp"
+#include <SFML/Network.hpp>
 
 uint8_t field_data[9];
 
 extern sf::RenderWindow *app;
 extern sf::Texture *mark_texture;
+extern sf::TcpSocket client;
+
+Field *g_field;
+bool playerTurn = true;
+
+
+void doOpponentTurn(uint8_t cell)
+{
+    g_field->placeMark(cell);
+    playerTurn = true;
+}
 
 MouseField::MouseField(Field *field)
 : m_field(field)
@@ -35,12 +47,13 @@ void MouseField::onMouseMove(sf::Event& event)
 {
 
     sf::Vector2i mouseLocal = getLocal(event.mouseMove.x, event.mouseMove.y);
-    size_t cell_n = localToCell(mouseLocal);
+    uint8_t cell_n = localToCell(mouseLocal);
 
     if (mouseLocal.x % 60 > 10 &&
         mouseLocal.y % 60 > 10)
     {
-        m_field->highlight(cell_n);
+        if (playerTurn)
+            m_field->highlight(cell_n);
     } else {
         m_field->mouseLeave();
     }
@@ -49,13 +62,22 @@ void MouseField::onMouseMove(sf::Event& event)
 
 void MouseField::onMouseUp(sf::Event& event)
 {
-    sf::Vector2i mouseLocal = getLocal(event.mouseButton.x, event.mouseButton.y);
-    size_t cell_n = localToCell(mouseLocal);
-
-    if (mouseLocal.x % 60 > 10 &&
-        mouseLocal.y % 60 > 10)
+    if (playerTurn)
     {
-        m_field->placeMark(cell_n);
+        sf::Vector2i mouseLocal = getLocal(event.mouseButton.x, event.mouseButton.y);
+        uint8_t cell_n = localToCell(mouseLocal);
+
+        if (mouseLocal.x % 60 > 10 &&
+            mouseLocal.y % 60 > 10)
+        {
+            sf::Packet packet;
+            packet << sf::Uint8(PACKET_TURN) << sf::Uint8(cell_n);
+            client.send(packet);
+
+            m_field->placeMark(cell_n);
+        }
+
+        playerTurn = false;
     }
 }
 
@@ -63,6 +85,8 @@ Field::Field(UI::Screen::Base *screen)
   : m_mouseField(this),
     m_prevHiglightCell(-1)
 {
+    g_field = this;
+
     sf::Vector2u dim = app->getSize();
 
     sf::RectangleShape sampleCell(sf::Vector2f(50.f, 50.f));
@@ -97,7 +121,7 @@ void Field::Run()
 
 bool xMark = true;
 
-void Field::placeMark(size_t& cell)
+void Field::placeMark(uint8_t& cell)
 {
     if (field_data[cell] != MARK_EMPTY)
         return;
@@ -125,7 +149,7 @@ void Field::mouseLeave()
     m_prevHiglightCell = -1;
 }
 
-void Field::highlight(size_t& cell_n)
+void Field::highlight(uint8_t& cell_n)
 {
     if (m_prevHiglightCell == cell_n)
         return;

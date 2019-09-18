@@ -17,7 +17,7 @@ class Field;
 class MouseField : public MouseEventObserver {
 public:
     MouseField(Field *field);
-    sf::Vector2i MouseField::getLocal(int& x, int& y);
+    sf::Vector2i getLocal(int& x, int& y);
     size_t localToCell(sf::Vector2i mouse);
     void onMouseUp(sf::Event& event);
     void onMouseMove(sf::Event& event);
@@ -29,10 +29,10 @@ class Field : public sf::RectangleShape {
 
 public:
     Field(UI::Screen::Base* screen);
-    void highlight(size_t& cell_n);
+    void highlight(uint8_t& cell_n);
     void Run();
     void mouseLeave();
-    void placeMark(size_t& cell);
+    void placeMark(uint8_t& cell);
 
 private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
