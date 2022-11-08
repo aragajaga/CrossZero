@@ -62,7 +62,7 @@ int Background::Run(sf::RenderWindow& app)
     for (const auto& it: parts.getSprites())
         app.draw(it);
 
-    app.draw(btn);
+    // app.draw(btn);
     return 0;
 }
 
@@ -101,7 +101,7 @@ int TitleScreen::Run(sf::RenderWindow& app)
 
     app.draw(header);
     app.draw(menu);
-    app.draw(button);
+    // app.draw(button);
 
     return 0;
 }
@@ -264,7 +264,7 @@ int FPSCounter::Run(sf::RenderWindow& app)
         10
     );
 
-    app.draw(btn);
+    // app.draw(btn);
     app.draw(fps);
     #ifdef DEBUG
     app.draw(version);

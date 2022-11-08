@@ -19,13 +19,18 @@ set(SRC_FILES
   "src/main.cpp"
   "src/animation.cpp"
   "src/field.cpp"
+  "src/branding_screen.cpp"
 )
 
 # Name output binary executable file
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 # Strict code to C++
-set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${PROJECT_NAME} PROPERTIES
+  LINKER_LANGUAGE CXX
+  CXX_STANDARD 20
+  CXX_STANDARD_REQUIRED ON
+  CXX_EXTENSIONS OFF)
 
 # Detect and add SFML
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
