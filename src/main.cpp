@@ -8,6 +8,7 @@
 #include "gamerule.hpp"
 #include <list>
 #include <filesystem>
+#include "branding_screen.hpp"
 
 #include "mini/ini.h"
 
@@ -23,6 +24,7 @@ UI::Screen::Settings *settingsScreen;
 UI::Screen::LoadingScreen *loadingScreen;
 UI::Screen::TitleScreen *titleScreen;
 UI::Screen::ConnectionError *errorScreen;
+UI::Screen::BrandingScreen *brandingScreen;
 std::vector<Animation *> animations;
 
 sf::Font *font_system;
@@ -270,6 +272,7 @@ int main(int argc, char * argv[]) {
     loadingScreen = new UI::Screen::LoadingScreen();
     titleScreen = new UI::Screen::TitleScreen();
     errorScreen = new UI::Screen::ConnectionError();
+    brandingScreen = new UI::Screen::BrandingScreen();
 
     // UI::Screen::Settings settings_menu;
 
@@ -277,7 +280,7 @@ int main(int argc, char * argv[]) {
 
     screenmgr = new UI::Screen::ScreenManager();
     screenmgr->ChangeTo(&background, SCREEN_LAYER_BACKGROUND);
-    screenmgr->ChangeTo(loadingScreen, SCREEN_LAYER_TOP);
+    screenmgr->ChangeTo(brandingScreen, SCREEN_LAYER_TOP);
     screenmgr->ChangeTo(&fps_counter, SCREEN_LAYER_OVERLAY);
 
     while (app->isOpen()) {
@@ -287,7 +290,7 @@ int main(int argc, char * argv[]) {
 
             if (event.type == sf::Event::KeyPressed)
                 if (event.key.code == sf::Keyboard::Escape)
-                    screenmgr->ChangeTo(titleScreen, SCREEN_LAYER_TOP);
+                    screenmgr->ChangeTo(brandingScreen, SCREEN_LAYER_TOP);
 
             if (event.type == sf::Event::Closed)
                 app->close();
